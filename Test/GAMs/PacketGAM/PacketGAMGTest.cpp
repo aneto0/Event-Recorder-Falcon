@@ -44,3 +44,8 @@ TEST(PacketGAMTest,TestConstructor) {
     ASSERT_TRUE(test.TestConstructor());
 }
 
+TEST(PacketGAMTest,TestExecute) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute());
+}
+

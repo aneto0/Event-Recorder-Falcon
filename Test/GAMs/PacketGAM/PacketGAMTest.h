@@ -45,6 +45,11 @@ public:
      * @brief Tests the constructor.
      */
     bool TestConstructor();
+
+    /**
+     * @brief Tests the Execute method.
+     */
+    bool TestExecute();
 };
 
 
