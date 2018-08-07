@@ -22,10 +22,10 @@
 #
 #############################################################
 
-OBJSX = CRIOUARTDataSource.x CRIOUARTSerial.x
+OBJSX =
 
 PACKAGE=Components/DataSources
-ROOT_DIR=../../
+ROOT_DIR=../../../
 MAKEDEFAULTDIR=$(MARTe2_DIR)/MakeDefaults
 include $(MAKEDEFAULTDIR)/MakeStdLibDefs.$(TARGET)
 
@@ -42,9 +42,13 @@ INCLUDES += -I$(MARTe2_DIR)/Source/Core/Scheduler/L3Services
 INCLUDES += -I$(MARTe2_DIR)/Source/Core/Scheduler/L4Messages
 INCLUDES += -I$(MARTe2_DIR)/Source/Core/Scheduler/L5GAMs
 
+INCLUDES += -I$(ROOT_DIR)/DataSources/CRIOUARTDataSource
+
+LIBRARIES += $(ROOT_DIR)/Build/$(TARGET)/Components/DataSources/CRIOUARTDataSource/CRIOUARTDataSource$(LIBEXT)
+LIBRARIES += -L$(MARTe2_DIR)/Build/$(TARGET)/Core/ -lMARTe2
+
 all: $(OBJS)    \
-    $(BUILD_DIR)/CRIOUARTDataSource$(LIBEXT) \
-    $(BUILD_DIR)/CRIOUARTDataSource$(DLLEXT)
+    $(BUILD_DIR)/CRIOUARTSender$(EXEEXT)
 	echo  $(OBJS)
 
 include depends.$(TARGET)

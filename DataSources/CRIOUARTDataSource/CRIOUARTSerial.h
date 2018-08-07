@@ -1,8 +1,8 @@
 /**
- * @file CRIOUARTDataSource.h
- * @brief Header file for class CRIOUARTDataSource
- * @date 25/06/2018
- * @author Marta Baldris
+ * @file CRIOUARTSerial.h
+ * @brief Header file for class CRIOUARTSerial
+ * @date 07/08/2018
+ * @author Filippo Sartori
  *
  * @copyright Copyright 2015 F4E | European Joint Undertaking for ITER and
  * the Development of Fusion Energy ('Fusion for Energy').
@@ -16,145 +16,115 @@
  * basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the Licence permissions and limitations under the Licence.
 
- * @details This header file contains the declaration of the class CRIOUARTDataSource
+ * @details This header file contains the declaration of the class CRIOUARTSerial
  * with all of its public, protected and private members. It may also include
  * definitions for inline methods which need to be visible to the compiler.
  */
 
-#ifndef CRIOUARTDATASOURCE_CRIOUARTDATASOURCE_H_
-#define CRIOUARTDATASOURCE_CRIOUARTDATASOURCE_H_
+#ifndef DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_
+#define DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_
 
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
 /*---------------------------------------------------------------------------*/
+#include <fcntl.h>
 
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
-#include "CRIOUARTSerial.h"
-#include "EmbeddedServiceMethodBinderT.h"
-#include "EventSem.h"
-#include "MemoryDataSourceI.h"
-#include "SingleThreadService.h"
-#include "StructuredDataI.h"
+#include "CompilerTypes.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
-
 /**
  * @brief TODO
  */
-class CRIOUARTDataSource: public MARTe::MemoryDataSourceI, public MARTe::EmbeddedServiceMethodBinderT<CRIOUARTDataSource> {
+class CRIOUARTSerial {
 public:
-    CLASS_REGISTER_DECLARATION()
     /**
      * @brief TODO
      */
-CRIOUARTDataSource    ();
+    CRIOUARTSerial();
 
     /**
      * @brief TODO
      */
-    virtual ~CRIOUARTDataSource();
+    virtual ~CRIOUARTSerial();
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual bool Initialise(MARTe::StructuredDataI &data);
+    bool SetSpeed(MARTe::uint32 &speed);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual bool SetConfiguredDatabase(MARTe::StructuredDataI & data);
+    bool Open(const MARTe::char8 *name);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual bool GetInputOffset(const MARTe::uint32 signalIdx, const MARTe::uint32 numberOfSamples, MARTe::uint32 &offset);
+    void Close();
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual void PrepareInputOffsets();
+    bool Read(MARTe::char8 *buffer, MARTe::uint32 &size);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual bool TerminateInputCopy(const MARTe::uint32 signalIdx, const MARTe::uint32 offset, const MARTe::uint32 numberOfSamples);
+    bool Read(MARTe::char8 *buffer, MARTe::uint32 &size, MARTe::uint32 timeoutUsec);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    MARTe::ErrorManagement::ErrorType CRIOThreadCallback(MARTe::ExecutionInfo &info);
+    bool WaitRead(MARTe::uint32 timeoutUsec);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual const MARTe::char8 *GetBrokerName(MARTe::StructuredDataI &data, const MARTe::SignalDirection direction);
+    bool Write(MARTe::char8 *buffer, MARTe::uint32 size);
 
     /**
-     * @see TODO
+     * @brief TODO
      */
-    virtual bool Synchronise();
-
-    /**
-     * @see TODO
-     */
-    virtual bool PrepareNextState(const MARTe::char8 * const currentStateName, const MARTe::char8 * const nextStateName);
-
+    bool WaitWrite(MARTe::uint32 timeoutUsec);
 private:
-
     /**
-     * @see TODO
+     * TODO
      */
-    MARTe::SingleThreadService executor;
+    MARTe::int32 fileDescriptor;
 
     /**
      * TODO
      */
-    MARTe::uint32 lastReadIdx;
+    MARTe::uint32 speedCode;
 
     /**
      * TODO
      */
-    MARTe::uint32 lastWrittenIdx;
+    fd_set readFDS;
 
     /**
      * TODO
      */
-    MARTe::uint32 packetByteSize;
+    fd_set readFDS_done;
 
     /**
      * TODO
      */
-    MARTe::EventSem eventSem;
+    fd_set writeFDS;
 
     /**
      * TODO
      */
-    MARTe::FastPollingMutexSem muxSem;
-
-    /**
-     * TODO
-     */
-    bool *writeMark;
-
-    /**
-     * TODO
-     */
-    CRIOUARTSerial serial;
-
-    /**
-     * TODO
-     */
-    MARTe::uint32 serialTimeout;
-
+    fd_set writeFDS_done;
 };
-
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* CRIOUARTDATASOURCE_CRIOUARTDATASOURCE_H_ */
+#endif /* DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_ */
 
