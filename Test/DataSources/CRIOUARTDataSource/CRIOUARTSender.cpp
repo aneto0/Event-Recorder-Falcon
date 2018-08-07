@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     }
     uint8 **mem = NULL;
     const uint32 numberOfBytes = 15;
-    uint32 numberOfMems = 3000;
+    uint32 numberOfMems = 3;
     if (ok) {
         mem = new uint8*[numberOfMems];
         uint32 i = 0;
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     if (ok) {
         uint32 c;
 
-        for (c = 10u; c < numberOfMems; c++) {
+        for (c = 0u; c < numberOfMems; c++) {
             serial.WaitWrite(100000);
             ok = serial.Write(reinterpret_cast<char8 *>(mem[c]), numberOfBytes);
             if (!ok) {
