@@ -20,10 +20,24 @@
 # See the Licence for the specific language governing 
 # permissions and limitations under the Licence. 
 #
+# $Id: Makefile.inc 3 2012-01-15 16:26:07Z aneto $
+#
 #############################################################
 
-INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
+SPB    = CRIOUARTDataSource.x
 
-OBJSX = CRIOUARTDataSourceGTest.x CRIOUARTSerialGTest.x 
+PACKAGE=Components
+ROOT_DIR=../../
+MAKEDEFAULTDIR=$(MARTe2_DIR)/MakeDefaults
 
-include Makefile.inc
+include $(MAKEDEFAULTDIR)/MakeStdLibDefs.$(TARGET)
+
+LIBRARIES_STATIC=$(BUILD_DIR)/CRIOUARTDataSource/CRIOUARTDataSourceTest$(LIBEXT)
+
+all: $(OBJS) $(SUBPROJ) \
+    $(BUILD_DIR)/DataSourcesTests$(LIBEXT)
+	echo  $(OBJS)
+
+include depends.$(TARGET)
+
+include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)

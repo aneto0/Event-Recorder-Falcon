@@ -41,14 +41,17 @@
 /*                           Static definitions                              */
 /*---------------------------------------------------------------------------*/
 struct SpeedTable {
-    MARTe::uint32 code;
+    MARTe::int32 code;
     MARTe::uint32 speed;
 };
 
-SpeedTable speedTable[] = { { B0, 0 }, { B50, 50 }, { B75, 75 }, { B110, 110 }, { B134, 134 }, { B150, 150 }, { B200, 200 }, { B300, 300 }, { B600, 600 }, { B1200, 1200 }, { B1800, 1800 }, { B2400,
-        2400 }, { B4800, 4800 }, { B9600, 9600 }, { B19200, 19200 }, { B38400, 38400 }, { B57600, 57600 }, { B115200, 115200 }, { B230400, 230400 }, { B460800, 460800 }, { B500000, 500000 }, {
-B576000, 576000 }, { B921600, 921600 }, { B1000000, 1000000 }, { B1152000, 1152000 }, { B1500000, 1500000 }, { B2000000, 2000000 }, { B2500000, 2500000 }, { B3000000, 3000000 }, { B3500000, 3500000 },
-        { B4000000, 4000000 } };
+const SpeedTable speedTable[] = { { B0, 0u }, { B50, 50u }, { B75, 75u }, { B110, 110u }, { B134, 134u },
+        { B150, 150u }, { B200, 200u }, { B300, 300u }, { B600, 600u }, { B1200, 1200 }, { B1800, 1800 },
+        { B2400, 2400u }, { B4800, 4800u }, { B9600, 9600u }, { B19200, 19200u }, { B38400, 38400u },
+        { B57600, 57600u }, { B115200, 115200u }, { B230400, 230400u }, { B460800, 460800u }, { B500000, 500000u }, {
+        B576000, 576000u }, { B921600, 921600u }, { B1000000, 1000000u }, { B1152000, 1152000u },
+        { B1500000, 1500000u }, { B2000000, 2000000u }, { B2500000, 2500000u }, { B3000000, 3000000 }, { B3500000,
+                3500000 }, { B4000000, 4000000u } };
 
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
@@ -122,12 +125,11 @@ bool CRIOUARTSerial::Open(const MARTe::char8* name) {
         newtio.c_cflag &= ~CRTSCTS; // No hardware handshake
         newtio.c_cflag &= ~CSTOPB; // 1 stopbit
 
-
         //newtio.c_iflag = IGNBRK;
         //            newtio.c_iflag &= ~(IXON | IXOFF | IXANY); // No software handshake
         //newtio.c_iflag |= (IXON | IXOFF | IXANY);  // software handshake
         newtio.c_iflag &= ~(IXON | IXOFF | IXANY);
-        newtio.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  /* Non Cannonical mode                            */
+        newtio.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG); /* Non Cannonical mode                            */
 
         newtio.c_lflag = 0;
         newtio.c_oflag = 0;
@@ -209,7 +211,8 @@ bool CRIOUARTSerial::WaitRead(MARTe::uint32 timeoutUsec) {
     timeWait.tv_sec = timeoutUsec / 1000000u;
     timeWait.tv_usec = timeoutUsec % 1000000u;
     readFDS_done = readFDS;
-    MARTe::int32 readyCount = select(fileDescriptor + 1, &readFDS_done, NULL_PTR(fd_set *), NULL_PTR(fd_set *), &timeWait);
+    MARTe::int32 readyCount = select(fileDescriptor + 1, &readFDS_done, NULL_PTR(fd_set *), NULL_PTR(fd_set *),
+                                     &timeWait);
 
     return (readyCount > 0);
 }
@@ -221,7 +224,8 @@ bool CRIOUARTSerial::WaitWrite(MARTe::uint32 timeoutUsec) {
     timeWait.tv_sec = timeoutUsec / 1000000u;
     timeWait.tv_usec = timeoutUsec % 1000000u;
     writeFDS_done = writeFDS;
-    MARTe::int32 readyCount = select(fileDescriptor + 1, NULL_PTR(fd_set *), &writeFDS_done, NULL_PTR(fd_set *), &timeWait);
+    MARTe::int32 readyCount = select(fileDescriptor + 1, NULL_PTR(fd_set *), &writeFDS_done, NULL_PTR(fd_set *),
+                                     &timeWait);
 
     return (readyCount > 0);
 }

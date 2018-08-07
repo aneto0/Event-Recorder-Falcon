@@ -1,2 +1,2 @@
-/depends.x86-linux
-/dependsRaw.x86-linux
+/depends*
+/cov/

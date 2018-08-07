@@ -22,8 +22,15 @@
 #
 #############################################################
 
-INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
-
-OBJSX = CRIOUARTDataSourceGTest.x CRIOUARTSerialGTest.x 
+TARGET=cov
 
 include Makefile.inc
+INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
+
+LIBRARIES   += ../../DataSources/$(TARGET)/DataSources$(LIBEXT)
+LIBRARIES   += ../../GAMs/$(TARGET)/GAMs$(LIBEXT)
+LIBRARIES   += ../../Test/DataSources/$(TARGET)/DataSourcesTests$(LIBEXT)
+LIBRARIES   += ../../Test/GAMs/$(TARGET)/GAMsTests$(LIBEXT)
+
+LIBRARIES   += -L$(MARTe2_DIR)/Build/x86-linux/Core/ -lMARTe2
+LIBRARIES   += $(MARTe2_DIR)/Lib/gtest-1.7.0/libgtest.a 

@@ -1,0 +1,7 @@
+-i./DataSources/CRIOUARTDataSource/
+-i./GAMs/PacketGAM/
+
+CRIOUARTDataSource.h
+CRIOUARTSerial.cpp
+PacketGAM.cpp
+

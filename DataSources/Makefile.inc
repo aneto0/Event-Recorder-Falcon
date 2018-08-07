@@ -22,8 +22,23 @@
 #
 #############################################################
 
-INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
+OBJSX= 
 
-OBJSX = CRIOUARTDataSourceGTest.x CRIOUARTSerialGTest.x 
+SPB    = CRIOUARTDataSource.x
 
-include Makefile.inc
+PACKAGE=Components
+ROOT_DIR=../
+MAKEDEFAULTDIR=$(MARTe2_DIR)/MakeDefaults
+
+include $(MAKEDEFAULTDIR)/MakeStdLibDefs.$(TARGET)
+
+LIBRARIES_STATIC+=$(BUILD_DIR)/CRIOUARTDataSource/CRIOUARTDataSource$(LIBEXT)
+
+all: $(OBJS)  $(SUBPROJ)  \
+    $(BUILD_DIR)/DataSources$(LIBEXT) \
+    $(BUILD_DIR)/DataSources$(DLLEXT)
+	echo  $(OBJS)
+
+include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
+
+

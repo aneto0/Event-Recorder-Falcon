@@ -22,8 +22,4 @@
 #
 #############################################################
 
-INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
-
-OBJSX = CRIOUARTDataSourceGTest.x CRIOUARTSerialGTest.x 
-
 include Makefile.inc

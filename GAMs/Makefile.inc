@@ -22,8 +22,20 @@
 #
 #############################################################
 
-INCLUDES += -I$(MARTe2_DIR)/Lib/gtest-1.7.0/include
+SPB = PacketGAM.x
 
-OBJSX = CRIOUARTDataSourceGTest.x CRIOUARTSerialGTest.x 
+PACKAGE=Components
+ROOT_DIR=../
+MAKEDEFAULTDIR=$(MARTe2_DIR)/MakeDefaults
 
-include Makefile.inc
+include $(MAKEDEFAULTDIR)/MakeStdLibDefs.$(TARGET)
+
+LIBRARIES_STATIC+=$(BUILD_DIR)/PacketGAM/PacketGAM$(LIBEXT)
+
+all: $(OBJS)  $(SUBPROJ)  \
+    $(BUILD_DIR)/GAMs$(LIBEXT) \
+    $(BUILD_DIR)/GAMs$(DLLEXT)
+	echo  $(OBJS)
+
+include $(MAKEDEFAULTDIR)/MakeStdLibRules.$(TARGET)
+

@@ -23,7 +23,7 @@
 # $Id: Makefile.inc 3 2012-01-15 16:26:07Z aneto $
 #
 #############################################################
-SPB    = DataSources/CRIOUARTDataSource.x GAMs/PacketGAM.x Test/DataSources/CRIOUARTDataSource.x
+SPB = DataSources.x GAMs.x Test/DataSources.x Test/GAMs.x Test/GTest.x
 
 MAKEDEFAULTDIR=$(MARTe2_DIR)/MakeDefaults
 

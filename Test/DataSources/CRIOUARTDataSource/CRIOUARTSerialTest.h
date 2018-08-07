@@ -2,7 +2,7 @@
  * @file CRIOUARTSerial.h
  * @brief Header file for class CRIOUARTSerial
  * @date 07/08/2018
- * @author Filippo Sartori
+ * @author Andre Neto
  *
  * @copyright Copyright 2015 F4E | European Joint Undertaking for ITER and
  * the Development of Fusion Energy ('Fusion for Energy').
@@ -21,110 +21,37 @@
  * definitions for inline methods which need to be visible to the compiler.
  */
 
-#ifndef DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_
-#define DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_
+#ifndef TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIALTEST_H_
+#define TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIALTEST_H_
 
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
 /*---------------------------------------------------------------------------*/
-#include <fcntl.h>
 
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
-#include "CompilerTypes.h"
+
 
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
 /**
- * @brief TODO
+ * @brief Tests the CRIOUARTDataSourceTest public methods.
  */
-class CRIOUARTSerial {
+class CRIOUARTSerialTest {
 public:
     /**
-     * @brief TODO
+     * @brief Tests the constructor..
      */
-    CRIOUARTSerial();
-
-    /**
-     * @brief TODO
-     */
-    virtual ~CRIOUARTSerial();
-
-    /**
-     * @brief TODO
-     */
-    bool SetSpeed(MARTe::uint32 &speed);
-
-    /**
-     * @brief TODO
-     */
-    bool Open(const MARTe::char8 *name);
-
-    /**
-     * @brief TODO
-     */
-    void Close();
-
-    /**
-     * @brief TODO
-     */
-    bool Read(MARTe::char8 *buffer, MARTe::uint32 &size);
-
-    /**
-     * @brief TODO
-     */
-    bool Read(MARTe::char8 *buffer, MARTe::uint32 &size, MARTe::uint32 timeoutUsec);
-
-    /**
-     * @brief TODO
-     */
-    bool WaitRead(MARTe::uint32 timeoutUsec);
-
-    /**
-     * @brief TODO
-     */
-    bool Write(MARTe::char8 *buffer, MARTe::uint32 size);
-
-    /**
-     * @brief TODO
-     */
-    bool WaitWrite(MARTe::uint32 timeoutUsec);
-private:
-    /**
-     * TODO
-     */
-    MARTe::int32 fileDescriptor;
-
-    /**
-     * TODO
-     */
-    MARTe::int32 speedCode;
-
-    /**
-     * TODO
-     */
-    fd_set readFDS;
-
-    /**
-     * TODO
-     */
-    fd_set readFDS_done;
-
-    /**
-     * TODO
-     */
-    fd_set writeFDS;
-
-    /**
-     * TODO
-     */
-    fd_set writeFDS_done;
+    bool TestConstructor();
 };
+
+
+
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIAL_H_ */
+#endif /* TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTSERIALTEST_H_ */
 
