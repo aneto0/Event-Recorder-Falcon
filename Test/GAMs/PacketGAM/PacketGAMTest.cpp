@@ -795,44 +795,6 @@ bool PacketGAMTest::TestConstructor() {
     using namespace MARTe;
 
     PacketGAM gam;
-
-    PacketCRC testCrc;
-    testCrc.ComputeTable(0x3d65);
-//testCrc.ComputeTable(0x1021);
-    testCrc.SetInitialCRC(0xffff);
-//testCrc.SetInitialCRC(0x0);
-
-//uint8 data[15] = { 0x01, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-//printf("CRC is 0x%x\n", testCrc.ComputeCRC(data, 3));
-
-    /*CRIOFPSPacket packet;
-     packet.ComputeCRC();
-     packet.Print();
-
-     packet.SetBit(16u);
-     packet.Print();
-     packet.ComputeCRC();
-     packet.Print();*/
-    /*packet.SetBit(1u);
-     packet.SetBit(15u);
-     packet.Print();
-     printf("Is bit 1 set? %d Is bit 15 set? %d Is bit 4 set %d ?\n", packet.IsBitSet(1), packet.IsBitSet(15), packet.IsBitSet(4));
-     printf("Bit 1 value = %d Bit 15 value = %d Bit 4 value = %d ?\n", packet.GetBitValue(1), packet.GetBitValue(15), packet.GetBitValue(4));
-
-     packet.UnsetBit(15u);
-     packet.Print();
-     printf("Is bit 1 set? %d Is bit 15 set? %d Is bit 4 set %d ?\n", packet.IsBitSet(1), packet.IsBitSet(15), packet.IsBitSet(4));
-     printf("Bit 1 value = %d Bit 15 value = %d Bit 4 value = %d ?\n", packet.GetBitValue(1), packet.GetBitValue(15), packet.GetBitValue(4));
-
-     packet.UnsetBit(1u);
-     packet.Print();
-     printf("Is bit 1 set? %d Is bit 15 set? %d Is bit 4 set %d ?\n", packet.IsBitSet(1), packet.IsBitSet(15), packet.IsBitSet(4));
-     printf("Bit 1 value = %d Bit 15 value = %d Bit 4 value = %d ?\n", packet.GetBitValue(1), packet.GetBitValue(15), packet.GetBitValue(4));*/
-
-    /*packet.SetBit(63u);
-     packet.SetBit(64u);
-     packet.SetBit(119u);*/
-
     return true;
 }
 
