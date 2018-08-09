@@ -39,7 +39,7 @@
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
-TEST(CRIOUARTSerialTest,TestConstructor) {
+TEST(CRIOUARTSerialGTest,TestConstructor) {
     CRIOUARTSerialTest test;
     ASSERT_TRUE(test.TestConstructor());
 }

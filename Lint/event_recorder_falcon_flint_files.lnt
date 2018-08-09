@@ -3,5 +3,6 @@
 
 CRIOUARTDataSource.h
 CRIOUARTSerial.cpp
+PacketCRC.cpp
 PacketGAM.cpp
 

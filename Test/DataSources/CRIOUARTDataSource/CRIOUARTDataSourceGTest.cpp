@@ -39,7 +39,7 @@
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
-TEST(CRIOUARTDataSourceTest,TestConstructor) {
+TEST(CRIOUARTDataSourceGTest,TestConstructor) {
     CRIOUARTDataSourceTest test;
     ASSERT_TRUE(test.TestConstructor());
 }

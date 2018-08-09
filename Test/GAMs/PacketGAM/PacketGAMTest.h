@@ -50,6 +50,21 @@ public:
      * @brief Tests the Execute method.
      */
     bool TestExecute();
+
+    /**
+     * @brief Tests that the Execute method detects an invalid CRC.
+     */
+    bool TestExecute_CRC();
+
+    /**
+     * @brief Tests that the Execute method detects an invalid CRC and a wrong synchronism byte.
+     */
+    bool TestExecute_CRC_Synchronism();
+
+    /**
+     * @brief Tests that the Execute method detects an invalid packet counter.
+     */
+    bool TestExecute_Packet_Counter();
 };
 
 

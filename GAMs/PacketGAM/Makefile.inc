@@ -22,7 +22,7 @@
 #
 #############################################################
 
-OBJSX = PacketGAM.x
+OBJSX = PacketCRC.x PacketGAM.x
 
 PACKAGE=Components/GAMs
 ROOT_DIR=../../

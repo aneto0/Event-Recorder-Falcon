@@ -58,9 +58,7 @@ set def \FALCON_EVENT::TOP.HVPS_OUT
 add node TRIP_OUT/usage=signal
 add node ON_MPS/usage=signal
 add node ON_BPS/usage=signal
-add node STATE_OUT_0/usage=signal
-add node STATE_OUT_1/usage=signal
-add node STATE_OUT_2/usage=signal
+add node STATE_OUT/usage=signal
 
 set def \FALCON_EVENT::TOP
 add node .OUT_IF

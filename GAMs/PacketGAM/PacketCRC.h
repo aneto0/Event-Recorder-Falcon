@@ -1,7 +1,7 @@
 /**
- * @file PacketGAM.h
- * @brief Header file for class PacketGAM
- * @date 07/08/2018
+ * @file PacketCRC.h
+ * @brief Header file for class PacketCRC
+ * @date 08/08/2018
  * @author Andre Neto
  * @author Marta Baldris
  *
@@ -17,13 +17,13 @@
  * basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the Licence permissions and limitations under the Licence.
 
- * @details This header file contains the declaration of the class PacketGAM
+ * @details This header file contains the declaration of the class PacketCRC
  * with all of its public, protected and private members. It may also include
  * definitions for inline methods which need to be visible to the compiler.
  */
 
-#ifndef GAMS_PACKETGAM_PACKETGAM_H_
-#define GAMS_PACKETGAM_PACKETGAM_H_
+#ifndef GAMS_PACKETGAM_PACKETCRC_H_
+#define GAMS_PACKETGAM_PACKETCRC_H_
 
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
@@ -32,9 +32,7 @@
 /*---------------------------------------------------------------------------*/
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
-#include "GAM.h"
-#include "PacketCRC.h"
-
+#include "CompilerTypes.h"
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
@@ -42,57 +40,48 @@
 /**
  * @brief TODO
  */
-class PacketGAM: public MARTe::GAM {
-
+class PacketCRC {
 public:
-    CLASS_REGISTER_DECLARATION()
+    /**
+     * @brief TODO
+     */
+    PacketCRC();
 
     /**
      * @brief TODO
      */
-PacketGAM    ();
+    virtual ~PacketCRC();
 
     /**
      * @brief TODO
      */
-    virtual ~PacketGAM();
+    void ComputeTable(MARTe::uint16 pol);
 
     /**
      * @brief TODO
      */
-    virtual bool Setup();
+    void SetInitialCRC(MARTe::uint16 initCRCIn);
 
     /**
-     * @brief TODO
+     * @brief TODO REMEMBER TO DOCUMENT THAT IF INPUT IS INVERTED, data MUST POINT AT THE LAST INDEX!!!
      */
-    virtual bool Execute();
+    MARTe::uint16 ComputeCRC(MARTe::uint8 *data, MARTe::int32 size, bool inputInverted);
 
 private:
     /**
      * TODO
      */
-    PacketCRC packetCRC;
+    MARTe::uint16 *crcTable;
 
     /**
      * TODO
      */
-    MARTe::int8 lastPacketCounter;
-
-    /**
-     * TODO
-     */
-    MARTe::int8 lastSynchronismByte;
-
-    /**
-     * TODO
-     */
-    bool firstTime;
-
+    MARTe::uint16 initCRC;
 };
 
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* GAMS_PACKETGAM_PACKETGAM_H_ */
+#endif /* GAMS_PACKETGAM_PACKETCRC_H_ */
 
