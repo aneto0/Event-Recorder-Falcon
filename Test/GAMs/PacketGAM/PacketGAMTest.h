@@ -52,6 +52,11 @@ public:
     bool TestExecute();
 
     /**
+     * @brief Tests the Execute method with a first time that is not zero.
+     */
+    bool TestExecute_FirstTime_NotZero();
+
+    /**
      * @brief Tests that the Execute method detects an invalid CRC.
      */
     bool TestExecute_CRC();
@@ -62,9 +67,29 @@ public:
     bool TestExecute_CRC_Synchronism();
 
     /**
+     * @brief Tests that the Execute method detects an invalid CRC at the first time.
+     */
+    bool TestExecute_CRC_FirstTime();
+
+    /**
      * @brief Tests that the Execute method detects an invalid packet counter.
      */
     bool TestExecute_Packet_Counter();
+
+    /**
+     * @brief Tests that the Execute method detects an invalid synchronism byte.
+     */
+    bool TestExecute_Invalid_Synchronism();
+
+    /**
+     * @brief Tests that the Execute method detects a repeated synchronism byte.
+     */
+    bool TestExecute_Repeated_Synchronism();
+
+    /**
+     * @brief Tests that the Execute method detects time going backwards.
+     */
+    bool TestExecute_InvalidTime();
 };
 
 

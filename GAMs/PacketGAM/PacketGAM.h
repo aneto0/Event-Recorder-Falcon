@@ -34,6 +34,7 @@
 /*---------------------------------------------------------------------------*/
 #include "GAM.h"
 #include "PacketCRC.h"
+#include "StatefulI.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
@@ -42,7 +43,7 @@
 /**
  * @brief TODO
  */
-class PacketGAM: public MARTe::GAM {
+class PacketGAM: public MARTe::GAM, public MARTe::StatefulI {
 
 public:
     CLASS_REGISTER_DECLARATION()
@@ -67,6 +68,11 @@ PacketGAM    ();
      */
     virtual bool Execute();
 
+    /**
+     * @brief TODO
+     */
+    virtual bool PrepareNextState(const MARTe::char8 * const currentStateName, const MARTe::char8 * const nextStateName);
+
 private:
     /**
      * TODO
@@ -82,6 +88,11 @@ private:
      * TODO
      */
     MARTe::int8 lastSynchronismByte;
+
+    /**
+     * TODO
+     */
+    MARTe::uint64 lastTime;
 
     /**
      * TODO

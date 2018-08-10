@@ -45,6 +45,7 @@ PacketGAM::PacketGAM() {
     packetCRC.ComputeTable(0x3D65);
     lastPacketCounter = 0u;
     lastSynchronismByte = 0u;
+    lastTime = 0u;
     firstTime = false;
 }
 
@@ -60,6 +61,11 @@ bool PacketGAM::Setup() {
     }
     firstTime = true;
     return ok;
+}
+
+bool PacketGAM::PrepareNextState(const MARTe::char8 * const currentStateName, const MARTe::char8 * const nextStateName) {
+    lastTime = 0xFFFFFFFFFFFFFFFFu;
+    return true;
 }
 
 bool PacketGAM::Execute() {
@@ -217,8 +223,20 @@ bool PacketGAM::Execute() {
         if ((packetCodeError & 0x8) != 0x8) {
             lastSynchronismByte |= *synchronismByte;
         }
-    }
 
+        //Detect times going into the past!
+        uint64 *currentTime = reinterpret_cast<uint64 *>(&timeSignal[0u]);
+        if (lastTime >= *currentTime) {
+            //Accept zero in the first packet
+            if ((lastTime != 0xFFFFFFFFFFFFFFFF) && (*currentTime != 0u)) {
+                REPORT_ERROR(ErrorManagement::Warning, "Time is going backwards or not increasing. Expected: currentTime (%.8u) to be > lastTime (%.8u)", *currentTime, lastTime);
+                packetCodeError = 0x10;
+            }
+        }
+        lastTime = *currentTime;
+
+        firstTime = false;
+    }
     outputSignalIdx++;
     uint8 *trigger = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
     *trigger = !fatalPacket;
@@ -227,7 +245,11 @@ bool PacketGAM::Execute() {
     uint8 *marteErrorCode = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
     *marteErrorCode = packetCodeError;
 
-    firstTime = false;
+    outputSignalIdx++;
+    //Store the raw packet at the end
+    uint8 *originalMessageMemory = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
+    MemoryOperationsHelper::Copy(&originalMessageMemory[0], &packet[0], 15u);
+
     return ok;
 }
 

@@ -49,6 +49,11 @@ TEST(PacketGAMGTest,TestExecute) {
     ASSERT_TRUE(test.TestExecute());
 }
 
+TEST(PacketGAMGTest,TestExecute_FirstTime_NotZero) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute_FirstTime_NotZero());
+}
+
 TEST(PacketGAMGTest,TestExecute_CRC) {
     PacketGAMTest test;
     ASSERT_TRUE(test.TestExecute_CRC());
@@ -59,7 +64,27 @@ TEST(PacketGAMGTest,TestExecute_CRC_Synchronism) {
     ASSERT_TRUE(test.TestExecute_CRC_Synchronism());
 }
 
+TEST(PacketGAMGTest,TestExecute_CRC_FirstTime) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute_CRC_FirstTime());
+}
+
 TEST(PacketGAMGTest,TestExecute_Packet_Counter) {
     PacketGAMTest test;
     ASSERT_TRUE(test.TestExecute_Packet_Counter());
+}
+
+TEST(PacketGAMGTest,TestExecute_Invalid_Synchronism) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute_Invalid_Synchronism());
+}
+
+TEST(PacketGAMGTest,TestExecute_Repeated_Synchronism) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute_Repeated_Synchronism());
+}
+
+TEST(PacketGAMGTest,TestExecute_InvalidTime) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestExecute_InvalidTime());
 }

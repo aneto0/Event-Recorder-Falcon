@@ -88,6 +88,7 @@ set def \FALCON_EVENT::TOP.DEBUG
 add node PACKET_COUNTER/usage=signal
 add node SYNCH_BYTE/usage=signal
 add node CRC/usage=signal
+add node ORIGINAL/usage=signal
 
 write
 close
