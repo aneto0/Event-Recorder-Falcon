@@ -261,7 +261,10 @@ bool CRIOUARTDataSource::Synchronise() {
 
 bool CRIOUARTDataSource::PrepareNextState(const MARTe::char8 * const currentStateName, const MARTe::char8 * const nextStateName) {
     using namespace MARTe;
-    bool ok = (executor.Start() == ErrorManagement::NoError);
+    bool ok = true;
+    if (executor.GetStatus() == EmbeddedThreadI::OffState) {
+        ok = (executor.Start() == ErrorManagement::NoError);
+    }
     return ok;
 }
 

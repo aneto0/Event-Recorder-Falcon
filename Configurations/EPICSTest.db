@@ -1,0 +1,19 @@
+record( longin, "TEST-AUX-FDAQ:Event_Status")
+{
+   field(DTYP, "Soft Channel")
+}
+
+record( longin, "TEST-AUX-FDAQ:Event_Status_CMD")
+{
+   field(DTYP, "Soft Channel")
+}
+
+record( longin, "TEST-AUX-FDAQ:Event_Error")
+{
+   field(DTYP, "Soft Channel")
+}
+
+record( longin, "TEST-AUX-FDAQ:Event_Error_Rst")
+{
+   field(DTYP, "Soft Channel")
+}

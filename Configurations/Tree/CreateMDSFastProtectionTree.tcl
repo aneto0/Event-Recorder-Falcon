@@ -85,9 +85,10 @@ add node VALUE/usage=signal
 set def \FALCON_EVENT::TOP
 add node .DEBUG
 set def \FALCON_EVENT::TOP.DEBUG
-add node PACKET_COUNTER/usage=signal
+add node PACKET_COUNT/usage=signal
 add node SYNCH_BYTE/usage=signal
 add node CRC/usage=signal
+add node MARTE_CODE/usage=signal
 add node ORIGINAL/usage=signal
 
 write

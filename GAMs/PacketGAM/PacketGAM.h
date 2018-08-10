@@ -41,7 +41,9 @@
 /*---------------------------------------------------------------------------*/
 
 /**
- * @brief TODO
+ * @brief GAM which copies the CRIO input to different signals ouptuts.
+ *  Allows to check the reliability of the received packet, checking CRC, counters and synchronism bits.
+ *
  */
 class PacketGAM: public MARTe::GAM, public MARTe::StatefulI {
 
@@ -49,17 +51,18 @@ public:
     CLASS_REGISTER_DECLARATION()
 
     /**
-     * @brief TODO
+     * @brief Default constructor. NOOP.
      */
 PacketGAM    ();
 
     /**
-     * @brief TODO
+     * @brief Destructor
      */
     virtual ~PacketGAM();
 
     /**
-     * @brief TODO
+     * @brief TODO. REMEMBER TO TEST CONFIGURATION IS AS EXPECTED.
+     * @return true if the input signals has been successfully copied.
      */
     virtual bool Setup();
 

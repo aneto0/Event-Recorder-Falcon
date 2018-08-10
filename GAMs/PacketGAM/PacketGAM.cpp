@@ -30,8 +30,8 @@
 /*                         Project header includes                           */
 /*---------------------------------------------------------------------------*/
 #include "AdvancedErrorManagement.h"
-#include "PacketGAM.h"
 #include "PacketCRC.h"
+#include "PacketGAM.h"
 
 /*---------------------------------------------------------------------------*/
 /*                           Static definitions                              */
@@ -71,7 +71,27 @@ bool PacketGAM::PrepareNextState(const MARTe::char8 * const currentStateName, co
 bool PacketGAM::Execute() {
     using namespace MARTe;
     bool ok = true;
-    uint8 *packet = reinterpret_cast<uint8 *>(GetInputSignalMemory(0u));
+
+    /**
+     *    ACQUIRE DATA FROM CRIO AND STORE IT AS A SIGNALS
+     *
+     *    Input: *packet
+     *    Output: *timeSignal
+     *            *outputSignal
+     *            *hvpsStateOut
+     *            *flsStateOut
+     *            *fpgaErrorCode
+     *            *logicMode
+     *            *packetSequenceCounter
+     *            *synchronismByte
+     *            *crc
+     *            *trigger
+     *            *marteErrorCode
+     *            *originalMessageMemory
+     */
+    uint8 *packet = reinterpret_cast<uint8 *>(GetInputSignalMemory(0u)); // Input signal: 15 bytes of data from CRIO
+
+    // packet[14u..10u] | OutputSignalMemory(0) => Data Time
     uint8 *timeSignal = reinterpret_cast<uint8 *>(GetOutputSignalMemory(0u));
 
     timeSignal[4u] = packet[14u];
@@ -80,7 +100,7 @@ bool PacketGAM::Execute() {
     timeSignal[1u] = packet[11u];
     timeSignal[0u] = packet[10u];
 
-    //packet[9u] => From outputs of input interface
+    // packet[9u] | OutputSignalMemory(1..8) => From outputs of input interface
     uint32 byteNumber = 9u;
     uint32 outputSignalIdx = 1u;
     int32 endSignalIdx = 7;
@@ -91,7 +111,7 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    //packet[8u] => From outputs of input interface (6 bits) & From outputs of FLS input processing (2bits)
+    // packet[8u] | OutputSignalMemory(9..16) => From outputs of input interface (6 bits) & From outputs of FLS input processing (2bits)
     byteNumber = 8u;
     for (i = endSignalIdx; i >= 0; i--) {
         uint8 *outputSignal = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx)); //Signal to store From outputs of input interface (14bits/signals)
@@ -99,7 +119,7 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    //packet[7u] => From outputs of FLS input processing (8bits)
+    //packet[7u] | OutputSignalMemory(17..24)  => From outputs of FLS input processing (8bits)
     byteNumber = 7u;
 
     for (i = endSignalIdx; i >= 0; i--) {
@@ -108,7 +128,7 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    //packet[6u] => From outputs of FLS input processing (8bits)
+    //packet[6u] | OutputSignalMemory(25..32)  => From outputs of FLS input processing (8bits)
     byteNumber = 6u;
 
     for (i = endSignalIdx; i >= 0; i--) {
@@ -117,7 +137,7 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    //packet[5u] => From outputs of FLS input processing (3bits) & OutAdHoc (1bit) & OutFLS(1bit)& OutHVPS (3bit)
+    //packet[5u] | OutputSignalMemory(33..40) => From outputs of FLS input processing (3bits) & OutAdHoc (1bit) & OutFLS(1bit)& OutHVPS (3bit)
     byteNumber = 5u;
 
     for (i = endSignalIdx; i >= 0; i--) {
@@ -126,10 +146,13 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    //packet[4u] => Outputs HVPS (3bits) & Signals from output interface (3bit) & FLS_Man_State (2bit)
+    //packet[4u]  | OutputSignalMemory(41) => Outputs HVPS (3bits) & Signals from output interface (3bit) & FLS_Man_State (2bit)
+    //            | OutputSignalMemory(42..45) => Signals from output interface (3bit) & FLS_Man_State (2bit)
+    //            | OutputSignalMemory(46) => FLS_Man_State (2bit) packet4 & (1bit) packet3
     byteNumber = 4u;
     uint8 *hvpsStateOut = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx)); //Signal to store From outputs of input interface (14bits/signals)
     uint8 hvpsStateOutTemp = ((packet[byteNumber] >> 5) & 0x7);
+
     //3 bit order is inverted for hvpsStateOut!
     *hvpsStateOut = 0u;
     *hvpsStateOut |= ((hvpsStateOutTemp << 2u) & 0x4);
@@ -144,11 +167,18 @@ bool PacketGAM::Execute() {
         outputSignalIdx++;
     }
 
-    // FLS State_Out (3 bits)
-    //2 bits B4 & 1 bit B3
+    // FLS_Man_State (3 bits) => 2bits(packet[4]) & 1bit(packet[3])
+    // FLS_Man_State -> 2 bits from packet 4
     uint8 *flsStateOut = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
     uint8 flsStateOutTemp = (packet[byteNumber] & 0x3u);
     flsStateOutTemp = flsStateOutTemp << 1u;
+
+    //packet[3u] | *OutputSignalMemory(46) => FLS_Man_State (2bit) packet4 & (1bit) packet3
+    //           |  OutputSignalMemory(47) => FPGAErrorCode
+    //           |  OutputsignalMemory(48) => LogicalMode
+    //           |  OutputSignalMemory(49) => PacketSequence Counter
+
+    // FLS_Man_State -> 1 bit from packet 3
     byteNumber = 3u;
     flsStateOutTemp |= ((packet[byteNumber] >> 7u) & 0x1u);
     *flsStateOut = 0u;
@@ -172,18 +202,31 @@ bool PacketGAM::Execute() {
     *packetSequenceCounter = (packet[byteNumber] & 0x3);
     outputSignalIdx++;
 
-    //Packet sequence counter
+    //packet[2u] | OutputMemorysignal(50u) => Packet Sequence Counter
     byteNumber = 2u;
     uint8 *synchronismByte = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
     *synchronismByte = packet[byteNumber];
     outputSignalIdx++;
 
-    //CRC
+    //packet[1u..0u] | OutputMemorysignal(51u..52u) => CRC code
     uint16 *crc = reinterpret_cast<uint16 *>(GetOutputSignalMemory(outputSignalIdx));
     uint8 *crb8b = reinterpret_cast<uint8 *>(crc);
     crb8b[1u] = packet[1u];
     crb8b[0u] = packet[0u];
 
+
+    /**
+     *    CHECK FOR PACKET ERRORS
+     *
+     *    This block is to analyse the reliability of the data acquired and send an error message if some bad behaviour is detected.
+     *    ErrorCodes:
+     *          FatalErrorCode: 0x1u
+     *          InvalidPacketCounter: 0x2u
+     *          SynchronismByteError: 0x4u
+     *          TimesError: 0x10u
+     */
+
+    // CRC Check
     uint8 packetCodeError = 0u;
     bool fatalPacket = false;
     uint16 expectedCRC = packetCRC.ComputeCRC(&packet[14], 13, true);
@@ -193,7 +236,7 @@ bool PacketGAM::Execute() {
         packetCodeError = 0x1;
     }
 
-    //Check if we have lost a packet counter
+    // Lost Packet Check: Detect packet counter increment errors. It has to increase from 00 to 03.
     if (!fatalPacket) {
         int8 packetCounterDifference = (*packetSequenceCounter - lastPacketCounter);
         if ((packetCounterDifference != 1) && (packetCounterDifference != -3)) {
@@ -204,7 +247,7 @@ bool PacketGAM::Execute() {
         }
         lastPacketCounter = *packetSequenceCounter;
 
-        //Detect synchronism byte errors. It has to be 0x55 or 0xAA
+     //Synchronism check: Detect synchronism byte errors. It has to be 0x55 or 0xAA, and change to the other in the next packet.
         if ((*synchronismByte == 0x55) || (*synchronismByte == 0xAA)) {
             if (*synchronismByte == lastSynchronismByte) {
                 if (!firstTime) {
@@ -237,6 +280,13 @@ bool PacketGAM::Execute() {
 
         firstTime = false;
     }
+
+    /**
+     * Additional Signals:
+     *        trigger: signal send to MDS+ to store the data
+     *        marteErrorCode: Indicates the error type
+     *        OriginalMessageMemory: Store the original data
+     */
     outputSignalIdx++;
     uint8 *trigger = reinterpret_cast<uint8 *>(GetOutputSignalMemory(outputSignalIdx));
     *trigger = !fatalPacket;
