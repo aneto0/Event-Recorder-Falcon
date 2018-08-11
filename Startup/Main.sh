@@ -62,8 +62,8 @@ if [ -z ${MARTe2_DIR+x} ]; then echo "Please set the MARTe2_DIR environment vari
 if [ -z ${MARTe2_Components_DIR+x} ]; then echo "Please set the MARTe2_Components_DIR environment variable"; exit; fi
 
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../Build/x86-linux/GAMs/PacketGAM/
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../Build/x86-linux/DataSources/CRIOUARTDataSource/
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../Build/x86-linux/Components/GAMs/PacketGAM/
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../Build/x86-linux/Components/DataSources/CRIOUARTDataSource/
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MARTe2_DIR/Build/x86-linux/Core/
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MARTe2_Components_DIR/Build/x86-linux/Components/DataSources/EPICSCA/
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MARTe2_Components_DIR/Build/x86-linux/Components/DataSources/LinuxTimer/

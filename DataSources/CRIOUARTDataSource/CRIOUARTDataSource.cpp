@@ -46,6 +46,7 @@ CRIOUARTDataSource::CRIOUARTDataSource() :
     lastWrittenIdx = 0u;
     serialTimeout = 0u;
     packetByteSize = 0u;
+    lastDataCopyHadTimeout = true;
     writeMark = NULL_PTR(bool *);
 }
 
@@ -122,6 +123,16 @@ bool CRIOUARTDataSource::Initialise(MARTe::StructuredDataI &data) {
             REPORT_ERROR(ErrorManagement::OSError, "Failed to open port %s", portName.Buffer());
         }
     }
+    //Do not allow to add signals in run-time
+    if (ok) {
+        ok = data.MoveRelative("Signals");
+    }
+    if (ok) {
+        ok = data.Write("Locked", 1u);
+    }
+    if (ok) {
+        ok = data.MoveToAncestor(1u);
+    }
     if (ok) {
         ok = executor.Initialise(data);
     }
@@ -135,20 +146,29 @@ bool CRIOUARTDataSource::SetConfiguredDatabase(MARTe::StructuredDataI & data) {
     using namespace MARTe;
     bool ok = MemoryDataSourceI::SetConfiguredDatabase(data);
     if (ok) {
-        ok = (GetNumberOfSignals() == 1u);
+        ok = (GetNumberOfSignals() == 2u);
         if (!ok) {
-            REPORT_ERROR(ErrorManagement::ParametersError, "Only one signal is accepted");
+            REPORT_ERROR(ErrorManagement::ParametersError, "Exactly two signals shall be defined (DataOK and Data)");
         }
     }
-    packetByteSize = 0u;
-    uint32 n;
-    for (n = 0u; (n < numberOfSignals) && (ok); n++) {
-        uint32 nBytes = 0u;
-        ok = GetSignalByteSize(0u, nBytes);
-
-        if (ok) {
-            packetByteSize += nBytes;
+    if (ok) {
+        ok = (GetSignalType(0u) == UnsignedInteger8Bit);
+        if (!ok) {
+            REPORT_ERROR(ErrorManagement::ParametersError, "The type of the first signal (DataOK shall be UnsignedInteger8)");
         }
+    }
+    if (ok) {
+        uint32 elements;
+        ok = GetSignalNumberOfElements(0u, elements);
+        if (ok) {
+            ok = (elements == 1u);
+        }
+        if (!ok) {
+            REPORT_ERROR(ErrorManagement::ParametersError, "The first signal (DataOK) shall have only one element");
+        }
+    }
+    if (ok) {
+        ok = GetSignalByteSize(1u, packetByteSize);
     }
     if (ok) {
         REPORT_ERROR(ErrorManagement::Information, "Going to read %d bytes from the serial interface.", packetByteSize);
@@ -174,10 +194,13 @@ MARTe::ErrorManagement::ErrorType CRIOUARTDataSource::CRIOThreadCallback(MARTe::
         }
         muxSem.FastUnLock();
 
-        uint32 writeIdx = (lastWrittenIdx * packetByteSize);
+        //Memory is not interleaved, thus there will be numberOfBuffers dataOK before teh actual data
+        uint32 serialWriteIdx = numberOfBuffers + (lastWrittenIdx * packetByteSize);
         uint32 bytesToRead = packetByteSize;
-        if (serial.Read(reinterpret_cast<char8 *>(&(memory[writeIdx])), bytesToRead, serialTimeout)) {
+        uint8 *dataOK = reinterpret_cast<uint8 *>(&(memory[lastWrittenIdx]));
+        if (serial.Read(reinterpret_cast<char8 *>(&(memory[serialWriteIdx])), bytesToRead, serialTimeout)) {
             if (muxSem.FastLock()) {
+                *dataOK = 1u;
                 writeMark[lastWrittenIdx] = true;
                 lastWrittenIdx++;
                 if (lastWrittenIdx == numberOfBuffers) {
@@ -190,7 +213,19 @@ MARTe::ErrorManagement::ErrorType CRIOUARTDataSource::CRIOThreadCallback(MARTe::
             muxSem.FastUnLock();
         }
         else {
-            if (bytesToRead != 0u) {
+            //No data received from the serial.Read. Allow the MARTe real-time thread to execute, but set the dataOK to false.
+            if (bytesToRead == 0u) {
+                if (muxSem.FastLock()) {
+                    *dataOK = 0u;
+                    if (!eventSem.Post()) {
+                        REPORT_ERROR(ErrorManagement::OSError, "Failed to post EventSem");
+                    }
+                }
+                muxSem.FastUnLock();
+            }
+            //Read only part of the packet from the serial.Read.
+            else {
+                //We are lost. Ignore anything coming from the serial until we have a silent period. After a period of no data, assume that the data is framed again...
                 uint32 timeoutToSynchronise = 500000;
                 REPORT_ERROR(ErrorManagement::Warning, "Failed to read %d bytes from serial. Trying to resynchronise by waiting %d us for no data", packetByteSize, timeoutToSynchronise);
                 while (serial.WaitRead(500000u)) {
@@ -234,19 +269,49 @@ void CRIOUARTDataSource::PrepareInputOffsets() {
 }
 
 bool CRIOUARTDataSource::GetInputOffset(const MARTe::uint32 signalIdx, const MARTe::uint32 numberOfSamples, MARTe::uint32 &offset) {
-    offset = (lastReadIdx * packetByteSize);
+    if (signalIdx == 0u) {
+        //Remember that the memory is organised as non-interleaved, i.e. signal1_1, signal1_2, ..., signal1_N, signal2_1, ..., signal2_N
+        offset = lastReadIdx;
+        if (muxSem.FastLock()) {
+            MARTe::uint8 *dataOK = reinterpret_cast<MARTe::uint8 *>(&(memory[offset]));
+            //Remember with 100% guarantee if the data was copied with a timeout or not, so that the lastReadIdx does not get incremented if new data
+            //become available between here and TerminateInputCopy
+            //See comment below in TerminateInputCopy.
+            lastDataCopyHadTimeout = (*dataOK == 0u);
+        }
+        muxSem.FastUnLock();
+    }
+    else {
+        //One buffer with one byte for each signal idx
+        offset = numberOfBuffers + (lastReadIdx * packetByteSize);
+    }
 
     return true;
 }
 
 bool CRIOUARTDataSource::TerminateInputCopy(const MARTe::uint32 signalIdx, const MARTe::uint32 offset, const MARTe::uint32 numberOfSamples) {
-    if (muxSem.FastLock()) {
-        writeMark[lastReadIdx] = false;
-    }
-    muxSem.FastUnLock();
-    lastReadIdx++;
-    if (lastReadIdx == numberOfBuffers) {
-        lastReadIdx = 0u;
+    //Only clear the dataOK after the data signal (i.e. signalIdx == 1) has been copied.
+    if (signalIdx == 1u) {
+        //Only increment if there was no timeout. The status of dataOK could have changed between the GetInputOffset and the TerminateInputCopy
+        //i.e. GetInputOffset could have copied data with a timeout for a given index, but when getting into TerminateInputCopy new data could
+        //be available. This would imply writeMark[lastReadIdx] = true and as such the lastReadIdx would be incremented and the data in lastReadIdx - 1 would not get coppied in
+        //the next GetInputOffset
+        if (!lastDataCopyHadTimeout) {
+            if (muxSem.FastLock()) {
+                if (writeMark[lastReadIdx]) {
+                    writeMark[lastReadIdx] = false;
+                    //Data was already read. Reset to zero the DataOK flag. (Memory is not interleaved, thus there will be numberOfBuffers dataOK before the data)
+                    MARTe::uint8 *dataOK = reinterpret_cast<MARTe::uint8 *>(&(memory[lastReadIdx]));
+                    *dataOK = 0u;
+                    lastReadIdx++;
+                    if (lastReadIdx == numberOfBuffers) {
+                        lastReadIdx = 0u;
+                    }
+                }
+            }
+            lastDataCopyHadTimeout = true;
+            muxSem.FastUnLock();
+        }
     }
     return true;
 }

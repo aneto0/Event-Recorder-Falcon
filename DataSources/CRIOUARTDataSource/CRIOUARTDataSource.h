@@ -143,6 +143,11 @@ private:
     /**
      * TODO
      */
+    bool lastDataCopyHadTimeout;
+
+    /**
+     * TODO
+     */
     CRIOUARTSerial serial;
 
     /**

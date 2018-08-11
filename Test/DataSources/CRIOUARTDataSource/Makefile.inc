@@ -45,12 +45,12 @@ INCLUDES += -I$(MARTe2_DIR)/Source/Core/Scheduler/L5GAMs
 INCLUDES += -I$(ROOT_DIR)/DataSources/CRIOUARTDataSource
 
 LIBRARIES += $(ROOT_DIR)/Build/$(TARGET)/Components/DataSources/CRIOUARTDataSource/CRIOUARTDataSource$(LIBEXT)
+LIBRARIES   += $(MARTe2_DIR)/Lib/gtest-1.7.0/libgtest.a $(MARTe2_DIR)/Lib/gtest-1.7.0/libgtest_main.a
 LIBRARIES += -L$(MARTe2_DIR)/Build/$(TARGET)/Core/ -lMARTe2
 
-#$(BUILD_DIR)/CRIOUARTSender$(EXEEXT) \
-
 all: $(OBJS)    \
-    $(BUILD_DIR)/CRIOUARTDataSourceTest$(LIBEXT)
+    $(BUILD_DIR)/CRIOUARTDataSourceTest$(LIBEXT) \
+    $(BUILD_DIR)/CRIOUARTSender$(EXEEXT)
 	echo  $(OBJS)
 
 include depends.$(TARGET)
