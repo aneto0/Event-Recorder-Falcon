@@ -194,7 +194,7 @@ MARTe::ErrorManagement::ErrorType CRIOUARTDataSource::CRIOThreadCallback(MARTe::
         }
         muxSem.FastUnLock();
 
-        //Memory is not interleaved, thus there will be numberOfBuffers dataOK before teh actual data
+        //Memory is not interleaved, thus there will be numberOfBuffers dataOK before the actual data
         uint32 serialWriteIdx = numberOfBuffers + (lastWrittenIdx * packetByteSize);
         uint32 bytesToRead = packetByteSize;
         uint8 *dataOK = reinterpret_cast<uint8 *>(&(memory[lastWrittenIdx]));
@@ -282,8 +282,10 @@ bool CRIOUARTDataSource::GetInputOffset(const MARTe::uint32 signalIdx, const MAR
         muxSem.FastUnLock();
     }
     else {
-        //One buffer with one byte for each signal idx
-        offset = numberOfBuffers + (lastReadIdx * packetByteSize);
+        //Remember that the memory pointer returned by the MemoryDataSourceI::GetSignalMemoryBuffer (and used by the broker) already points
+        //to the beginning of each signal memory, so that each signal memory starts with a zero offset. Nevertheless, the "memory" variable points to the beginning
+        //of the full memory (i.e. at the beginning of the memory of signal zero).
+        offset = (lastReadIdx * packetByteSize);
     }
 
     return true;

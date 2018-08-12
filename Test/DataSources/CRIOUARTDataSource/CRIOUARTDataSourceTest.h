@@ -45,6 +45,11 @@ public:
      * @brief Tests the constructor.
      */
     bool TestConstructor();
+
+    /**
+     * @brief Tests the CRIOThreadCallback (i.e. that the serial port is receiving the expected data).
+     */
+    bool TestCRIOThreadCallback();
 };
 
 

@@ -44,3 +44,7 @@ TEST(CRIOUARTDataSourceGTest,TestConstructor) {
     ASSERT_TRUE(test.TestConstructor());
 }
 
+TEST(CRIOUARTDataSourceGTest,TestCRIOThreadCallback) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestCRIOThreadCallback());
+}
