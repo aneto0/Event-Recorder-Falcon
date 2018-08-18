@@ -44,6 +44,26 @@ TEST(PacketGAMGTest,TestConstructor) {
     ASSERT_TRUE(test.TestConstructor());
 }
 
+TEST(PacketGAMGTest,TestSetup) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup());
+}
+
+TEST(PacketGAMGTest,TestSetup_Not2Inputs) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_Not2Inputs());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadSignal0) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadSignal0());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadSignal1) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadSignal1());
+}
+
 TEST(PacketGAMGTest,TestExecute) {
     PacketGAMTest test;
     ASSERT_TRUE(test.TestExecute());

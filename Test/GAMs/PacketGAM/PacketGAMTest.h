@@ -47,6 +47,26 @@ public:
     bool TestConstructor();
 
     /**
+     * @brief Tests the Setup method.
+     */
+    bool TestSetup();
+
+    /**
+     * @brief Tests the Setup method with more than 2 input signals.
+     */
+    bool TestSetup_Not2Inputs();
+
+    /**
+     * @brief Tests the Setup method with a bad signal 0 definition.
+     */
+    bool TestSetup_BadSignal0();
+
+    /**
+     * @brief Tests the Setup method with a bad signal 1 definition.
+     */
+    bool TestSetup_BadSignal1();
+
+    /**
      * @brief Tests the Execute method.
      */
     bool TestExecute();
