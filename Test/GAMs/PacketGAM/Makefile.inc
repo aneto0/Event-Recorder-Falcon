@@ -44,9 +44,6 @@ INCLUDES += -I$(MARTe2_DIR)/Source/Core/Scheduler/L5GAMs
 
 INCLUDES += -I$(ROOT_DIR)/GAMs/PacketGAM
 
-LIBRARIES += $(ROOT_DIR)/Build/$(TARGET)/Components/GAMs/PacketGAM/PacketGAM$(LIBEXT)
-LIBRARIES += -L$(MARTe2_DIR)/Build/$(TARGET)/Core/ -lMARTe2
-
 all: $(OBJS)    \
     $(BUILD_DIR)/PacketGAMTest$(LIBEXT)
 	echo  $(OBJS)

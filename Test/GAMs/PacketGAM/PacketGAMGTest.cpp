@@ -64,6 +64,31 @@ TEST(PacketGAMGTest,TestSetup_BadSignal1) {
     ASSERT_TRUE(test.TestSetup_BadSignal1());
 }
 
+TEST(PacketGAMGTest,TestSetup_Not54Outputs) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_Not54Outputs());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadTimeSignal) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadTimeSignal());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadLastSignal) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadLastSignal());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadBitSignal) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadBitSignal());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadCRCSignal) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadCRCSignal());
+}
+
 TEST(PacketGAMGTest,TestExecute) {
     PacketGAMTest test;
     ASSERT_TRUE(test.TestExecute());
@@ -107,4 +132,14 @@ TEST(PacketGAMGTest,TestExecute_Repeated_Synchronism) {
 TEST(PacketGAMGTest,TestExecute_InvalidTime) {
     PacketGAMTest test;
     ASSERT_TRUE(test.TestExecute_InvalidTime());
+}
+
+TEST(PacketGAMGTest,TestSetup_BadDimensions) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestSetup_BadDimensions());
+}
+
+TEST(PacketGAMGTest,TestPrepareNextState) {
+    PacketGAMTest test;
+    ASSERT_TRUE(test.TestPrepareNextState());
 }

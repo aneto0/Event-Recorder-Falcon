@@ -350,27 +350,27 @@ private:
     bool CheckSignal(MARTe::uint32 signalIdx, MARTe::SignalDirection direction, MARTe::TypeDescriptor expectedType, MARTe::uint32 expectedDimensions, MARTe::uint32 expectedElements);
 
     /**
-     * TODO
+     * Compute the packet CRC so that it can be compared against the CRC that is delivered in the input of the GAM.
      */
     PacketCRC packetCRC;
 
     /**
-     * TODO
+     * The counter of the last packet [0, 3]
      */
     MARTe::int8 lastPacketCounter;
 
     /**
-     * TODO
+     * The synchronism byte of the last packet 0xAA or 0x55
      */
     MARTe::int8 lastSynchronismByte;
 
     /**
-     * TODO
+     * The time of the last packet.
      */
     MARTe::uint64 lastTime;
 
     /**
-     * TODO
+     * Ignore syncrhonism bytes errors related to the first packet
      */
     bool firstTime;
 

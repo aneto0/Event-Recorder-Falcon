@@ -32,7 +32,6 @@
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
@@ -52,7 +51,7 @@ public:
     bool TestSetup();
 
     /**
-     * @brief Tests the Setup method with more than 2 input signals.
+     * @brief Tests the Setup method with a number of input signals which is != 2.
      */
     bool TestSetup_Not2Inputs();
 
@@ -65,6 +64,36 @@ public:
      * @brief Tests the Setup method with a bad signal 1 definition.
      */
     bool TestSetup_BadSignal1();
+
+    /**
+     * @brief Tests the Setup method with a number of output signals which is != 54.
+     */
+    bool TestSetup_Not54Outputs();
+
+    /**
+     * @brief Tests the Setup method with a time signal that is not uint64.
+     */
+    bool TestSetup_BadTimeSignal();
+
+    /**
+     * @brief Tests the Setup method with a last signal that is not uint8[15].
+     */
+    bool TestSetup_BadLastSignal();
+
+    /**
+     * @brief Tests the Setup method with a CRC signal that is not uint16.
+     */
+    bool TestSetup_BadCRCSignal();
+
+    /**
+     * @brief Tests the Setup method with an output bit signal that is not uint8.
+     */
+    bool TestSetup_BadBitSignal();
+
+    /**
+     * @brief Tests the Setup method with an output bit signal that has the wrong number of dimensions.
+     */
+    bool TestSetup_BadDimensions();
 
     /**
      * @brief Tests the Execute method.
@@ -110,9 +139,12 @@ public:
      * @brief Tests that the Execute method detects time going backwards.
      */
     bool TestExecute_InvalidTime();
+
+    /**
+     * @brief Tests the PrepareNextState method.
+     */
+    bool TestPrepareNextState();
 };
-
-
 
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */

@@ -178,8 +178,9 @@ static bool TestIntegratedInApplication(const MARTe::char8 * const config, MARTe
         application->StartNextStateExecution();
     }
 
-    ReferenceT<CRIOUARTDataSourceTestGAM> gam = application->Find("Functions.GAM1");
+    ReferenceT<CRIOUARTDataSourceTestGAM> gam;
     if (ok) {
+        gam = application->Find("Functions.GAM1");
         ok = gam.IsValid();
     }
     CRIOUARTSerial uart;
