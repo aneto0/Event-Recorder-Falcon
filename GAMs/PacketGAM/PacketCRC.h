@@ -38,43 +38,54 @@
 /*---------------------------------------------------------------------------*/
 
 /**
- * @brief TODO
+ * @brief Computes the expected CRC of any given input packet (see ComputeCRC).
+ * @details The implementation is generic (for a 16 bit CRC) and can be used for any input.
+ *
+ * The CRC table shall be pre-computed by calling ComputeTable. The initial CRC value shall be set using SetInitialCRC, otherwise zero is assumed.
+ *
+ * The implementation is based on the algorithm implementation described in http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html
  */
 class PacketCRC {
 public:
     /**
-     * @brief TODO
+     * @brief NOOP.
      */
     PacketCRC();
 
     /**
-     * @brief TODO
+     * @brief Destroys the previously allocated polynomial division lookup table.
      */
     virtual ~PacketCRC();
 
     /**
-     * @brief TODO
+     * @brief Computes a lookup table for a given polynomial divisor.
+     * @param[in] pol the polynomial divisor to be used for this CRC instance.
      */
     void ComputeTable(MARTe::uint16 pol);
 
     /**
-     * @brief TODO
+     * @brief Sets the initial value of the CRC.
      */
     void SetInitialCRC(MARTe::uint16 initCRCIn);
 
     /**
-     * @brief TODO REMEMBER TO DOCUMENT THAT IF INPUT IS INVERTED, data MUST POINT AT THE LAST INDEX!!!
+     * @brief Computes the CRC for \a size bytes in \a data.
+     * @param[in] data the bytes against which the CRC will be computed.
+     * @param[in] size the number of bytes in \a data.
+     * @param[in] inputInverted if true, the order of the bytes to compute the CRC will be data[0], data[-1], data[-2] ... data[-size + 1].
+     * This implies that, when using inputInverted, the data must be pointing at the last byte (since negative indexes will be used)
+     * @return the CRC value.
      */
     MARTe::uint16 ComputeCRC(MARTe::uint8 *data, MARTe::int32 size, bool inputInverted);
 
 private:
     /**
-     * TODO
+     * Lookup table for a given polynomial divisor.
      */
     MARTe::uint16 *crcTable;
 
     /**
-     * TODO
+     * Initial value of the CRC (default is zero).
      */
     MARTe::uint16 initCRC;
 };

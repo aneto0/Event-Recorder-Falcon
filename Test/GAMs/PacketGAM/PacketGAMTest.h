@@ -1,6 +1,6 @@
 /**
- * @file CRIODataSourceTest.h
- * @brief Header file for class CRIODataSourceTest
+ * @file PacketGAMTest.h
+ * @brief Header file for class PacketGAMTest
  * @date 07/08/2018
  * @author Andre Neto
  *
@@ -16,13 +16,13 @@
  * basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the Licence permissions and limitations under the Licence.
 
- * @details This header file contains the declaration of the class CRIODataSourceTest
+ * @details This header file contains the declaration of the class PacketGAMTest
  * with all of its public, protected and private members. It may also include
  * definitions for inline methods which need to be visible to the compiler.
  */
 
-#ifndef TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTDATASOURCETEST_H_
-#define TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTDATASOURCETEST_H_
+#ifndef TEST_GAMS_PACKETGAMTEST_H_
+#define TEST_GAMS_PACKETGAMTEST_H_
 
 /*---------------------------------------------------------------------------*/
 /*                        Standard header includes                           */
@@ -36,7 +36,7 @@
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
 /**
- * @brief Tests the PacketGAMTest public methods.
+ * @brief Tests the PacketGAM public methods.
  */
 class PacketGAMTest {
 public:
@@ -150,5 +150,5 @@ public:
 /*                        Inline method definitions                          */
 /*---------------------------------------------------------------------------*/
 
-#endif /* TEST_DATASOURCES_CRIOUARTDATASOURCE_CRIOUARTDATASOURCETEST_H_ */
+#endif /* TEST_GAMS_PACKETGAMTEST_H_ */
 
