@@ -75,20 +75,7 @@ bool CRIOUARTSerial::SetSpeed(MARTe::uint32& speed) {
         while ((speedTable[ix].code != __MAX_BAUD) && (speed > speedTable[ix].speed)) {
             ix++;
         }
-
-        if ((speedTable[ix].speed - speed) > (speed - speedTable[ix - 1].speed)) {
-            ix--;
-        }
-
         speedCode = speedTable[ix].code;
-        speed = speedTable[ix].speed;
-
-    }
-    else {
-        int32 ix = 0;
-        while (speedTable[ix].code != speedCode) {
-            ix++;
-        }
         speed = speedTable[ix].speed;
 
     }
@@ -124,7 +111,6 @@ bool CRIOUARTSerial::Open(const MARTe::char8* name) {
         newtio.c_cflag &= ~CSTOPB; // 1 stopbit
 
         //newtio.c_iflag = IGNBRK;
-        //            newtio.c_iflag &= ~(IXON | IXOFF | IXANY); // No software handshake
         //newtio.c_iflag |= (IXON | IXOFF | IXANY);  // software handshake
         newtio.c_iflag &= ~(IXON | IXOFF | IXANY);
         newtio.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG); /* Non Cannonical mode                            */
@@ -179,8 +165,8 @@ bool CRIOUARTSerial::Read(MARTe::char8* buffer, MARTe::uint32 &size, MARTe::uint
         if (ok) {
             MARTe::int32 readBytes = read(fileDescriptor, rbuffer, leftToRead);
             if (readBytes > 0) {
-                rbuffer = &buffer[readBytes];
                 leftToRead -= readBytes;
+                rbuffer = &buffer[size - leftToRead];
                 //REPORT_ERROR_STATIC(MARTe::ErrorManagement::OSError, "Read %d bytes from serial", readBytes);
             }
             else {

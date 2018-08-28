@@ -32,7 +32,6 @@
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
@@ -42,9 +41,54 @@
 class CRIOUARTSerialTest {
 public:
     /**
-     * @brief Tests the constructor..
+     * @brief Tests the constructor.
      */
     bool TestConstructor();
+
+    /**
+     * @brief Tests the SetSpeed method.
+     */
+    bool TestSetSpeed();
+
+    /**
+     * @brief Tests the Open method.
+     */
+    bool TestOpen();
+
+    /**
+     * @brief Tests that the Open method fails with a wrong fd name.
+     */
+    bool TestOpen_WrongName();
+
+    /**
+     * @brief Tests the Close method.
+     */
+    bool TestClose();
+
+    /**
+     * @brief Tests the Read method.
+     */
+    bool TestRead();
+
+    /**
+     * @brief Tests the Read with timeout method.
+     */
+    bool TestReadTimeout();
+
+    /**
+     * @brief Tests the WaitRead method.
+     */
+    bool TestWaitRead();
+
+    /**
+     * @brief Tests the Write method.
+     */
+    bool TestWrite();
+
+    /**
+     * @brief Tests the WaitWrite method.
+     */
+    bool TestWaitWrite();
 };
 
 

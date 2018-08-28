@@ -44,3 +44,42 @@ TEST(CRIOUARTSerialGTest,TestConstructor) {
     ASSERT_TRUE(test.TestConstructor());
 }
 
+TEST(CRIOUARTSerialGTest,TestRead) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestRead());
+}
+
+TEST(CRIOUARTSerialGTest,TestReadTimeout) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestReadTimeout());
+}
+
+TEST(CRIOUARTSerialGTest,TestClose) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestClose());
+}
+
+TEST(CRIOUARTSerialGTest,TestOpen) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestOpen());
+}
+
+TEST(CRIOUARTSerialGTest,TestOpen_WrongName) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestOpen_WrongName());
+}
+
+TEST(CRIOUARTSerialGTest,TestSetSpeed) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestSetSpeed());
+}
+
+TEST(CRIOUARTSerialGTest,TestWaitRead) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestWaitRead());
+}
+
+TEST(CRIOUARTSerialGTest,TestWrite) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestWrite());
+}

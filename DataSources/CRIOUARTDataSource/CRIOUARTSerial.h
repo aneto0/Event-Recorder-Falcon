@@ -38,87 +38,118 @@
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
 /**
- * @brief TODO
+ * @brief UART implementation based on the Linux general terminal interface that is provided to control asynchronous communications ports.
+ * @details Some of termio parameters are hard-coded (e.g. parity, number of stop bits, ...) for the CRIO serial interface use-case.
  */
 class CRIOUARTSerial {
 public:
     /**
-     * @brief TODO
+     * @brief FD_ZERO the file descriptors.
      */
     CRIOUARTSerial();
 
     /**
-     * @brief TODO
+     * @brief Calls Close()
      */
     virtual ~CRIOUARTSerial();
 
     /**
-     * @brief TODO
+     * @brief Sets the speed of the UART. Shall be called before the Open method.
+     * @param[in,out] serial the speed to set and the speed that was actually set.
+     * @return true if the speed was successfully updated.
      */
     bool SetSpeed(MARTe::uint32 &speed);
 
     /**
-     * @brief TODO
+     * @brief Opens the UART described by the provided \a name.
+     * @details The UART is open in read/write mode. Many of the UART properties are
+     *  hard-coded for the CRIO use-case.
+     * @param[in] name the UART file descriptor location.
+     * @pre
+     *   SetSpeed
      */
     bool Open(const MARTe::char8 *name);
 
     /**
-     * @brief TODO
+     * @brief Closes the UART.
+     * @pre
+     *   Open
      */
     void Close();
 
     /**
-     * @brief TODO
+     * @brief Reads \a size bytes into the \a buffer.
+     * @param[in] buffer the memory where to write the read bytes.
+     * @param[in,out] size the number of bytes to read and the number of bytes that were actually read.
+     * @return true if the Read operation completes successfully (and reads all the requested bytes).
+     * @pre
+     *   Open
      */
     bool Read(MARTe::char8 *buffer, MARTe::uint32 &size);
 
     /**
-     * @brief TODO
+     * @brief Reads \a size bytes into the \a buffer within \a timeoutUsec micro-seconds.
+     * @param[in] buffer the memory where to write the read bytes.
+     * @param[in,out] size the number of bytes to read and the number of bytes that were actually read.
+     * @param[in] timeoutUsec the maximum time to complete the read operation.
+     * @return true if the Read operation completes successfully within the timeout (and reads all the requested bytes).
+     * @pre
+     *   Open
      */
     bool Read(MARTe::char8 *buffer, MARTe::uint32 &size, MARTe::uint32 timeoutUsec);
 
     /**
-     * @brief TODO
+     * @brief Waits \a timeoutUsec micro-seconds for data to be available for reading in the UART.
+     * @param[in] timeoutUsec the maximum time to wait for data to be available.
+     * @return true if data is available to be read within the timeout.
      */
     bool WaitRead(MARTe::uint32 timeoutUsec);
 
     /**
-     * @brief TODO
+     * @brief Writes \a size bytes from the \a buffer.
+     * @param[in] buffer the memory where to read the bytes to write.
+     * @param[in] size the number of bytes to write.
+     * @param[in] timeoutUsec the maximum time to complete the read operation.
+     * @return true if the Read operation completes successfully within the timeout (and reads all the requested bytes).
+     * @pre
+     *   Open
      */
     bool Write(MARTe::char8 *buffer, MARTe::uint32 size);
 
     /**
-     * @brief TODO
+     * @brief Waits \a timeoutUsec micro-seconds for the UART to be available for writing data.
+     * @param[in] timeoutUsec the maximum time to wait for the write to be available.
+     * @return true if the UART is available to write within the timeout.
      */
     bool WaitWrite(MARTe::uint32 timeoutUsec);
 private:
     /**
-     * TODO
+     * The file descriptor associated to the Open operation.
      */
     MARTe::int32 fileDescriptor;
 
     /**
-     * TODO
+     * The speed set with SetSpeed.
      */
     MARTe::int32 speedCode;
 
     /**
-     * TODO
+     * The file descriptor array for the read in the select.
      */
     fd_set readFDS;
 
     /**
-     * TODO
+     * The file descriptor array ready to be read as returned by the select.
      */
     fd_set readFDS_done;
 
     /**
-     * TODO
+     * The file descriptor array for the write in the select.
      */
     fd_set writeFDS;
 
     /**
-     * TODO
+     * The file descriptor array ready to be written as returned by the select.
      */
     fd_set writeFDS_done;
 };
