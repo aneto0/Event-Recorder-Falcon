@@ -74,9 +74,6 @@ bool CRIOUARTSerialTest::TestSetSpeed() {
     while ((ok) && (i < 31)) {
         speed = speedTable[i];
         ok = serial.SetSpeed(speed);
-        if (ok) {
-            ok = (speed == speedTable[i]);
-        }
         i++;
     }
     if (ok) {
@@ -87,6 +84,29 @@ bool CRIOUARTSerialTest::TestSetSpeed() {
         ok = serial.Open("/dev/ttyUSB0");
     }
 
+    serial.Close();
+    return ok;
+}
+
+bool CRIOUARTSerialTest::TestSetSpeed_False() {
+    using namespace MARTe;
+    CRIOUARTSerial serial;
+    uint32 speed = 115201;
+    bool ok = !serial.SetSpeed(speed);
+    return ok;
+}
+
+bool CRIOUARTSerialTest::TestSetSpeed_False_Open() {
+    using namespace MARTe;
+    CRIOUARTSerial serial;
+    uint32 speed = 115200;
+    bool ok = serial.SetSpeed(speed);
+    if (ok) {
+        ok = serial.Open("/dev/ttyUSB0");
+    }
+    if (ok) {
+        ok = !serial.SetSpeed(speed);
+    }
     serial.Close();
     return ok;
 }
@@ -196,7 +216,6 @@ bool CRIOUARTSerialTest::TestReadTimeout() {
     if (ok) {
         uint32 size = len;
         ok = serial.Read(&dataRead[0], size, 2000000);
-        printf("[%d] [%d] [%s]\n", ok, size, dataRead);
     }
     if (ok) {
         StreamString dataReadStr = dataRead;

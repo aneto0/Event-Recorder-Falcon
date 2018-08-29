@@ -147,7 +147,7 @@ CLASS_REGISTER(CRIOUARTDataSourceTestGAM, "1.0")
 /**
  * Starts a MARTe application that uses this driver instance.
  */
-static bool TestIntegratedInApplication(const MARTe::char8 * const config, MARTe::TimeoutType maxTimeout) {
+static bool TestIntegratedInApplication(const MARTe::char8 * const config, MARTe::TimeoutType maxTimeout, MARTe::uint32 forceErrorIdx = 100000u) {
     using namespace MARTe;
 
     ConfigurationDatabase cdb;
@@ -204,10 +204,19 @@ static bool TestIntegratedInApplication(const MARTe::char8 * const config, MARTe
             timeoutTicks = HighResolutionTimer::Counter();
             Sleep::Sec(0.1);
             if (i < gam->numberOfExpectedPatterns) {
-                uart.Write(reinterpret_cast<char8 *>(gam->expectedPatterns[i]), gam->patternSize);
-                MARTe::Vector<MARTe::uint8> vecTemp(gam->expectedPatterns[i], gam->patternSize);
-                REPORT_ERROR_STATIC(MARTe::ErrorManagement::Information, "Wrote %d", vecTemp);
-                i++;
+                if (i == forceErrorIdx) {
+                    uart.Write(reinterpret_cast<char8 *>(gam->expectedPatterns[i]), gam->patternSize-1);
+                    Sleep::Sec(0.1);
+                    uart.Write(reinterpret_cast<char8 *>(gam->expectedPatterns[i]), gam->patternSize-1);
+                    Sleep::Sec(1.0);
+                    forceErrorIdx = 100000;
+                }
+                else {
+                    uart.Write(reinterpret_cast<char8 *>(gam->expectedPatterns[i]), gam->patternSize);
+                    MARTe::Vector<MARTe::uint8> vecTemp(gam->expectedPatterns[i], gam->patternSize);
+                    REPORT_ERROR_STATIC(MARTe::ErrorManagement::Information, "Wrote %d", vecTemp);
+                    i++;
+                }
             }
         }
         ok = done;
@@ -296,6 +305,75 @@ const MARTe::char8 * const config1 = ""
         "    }"
         "}";
 
+//Standard configuration
+const MARTe::char8 * const config2 = ""
+        "$Test = {"
+        "    Class = RealTimeApplication"
+        "    +Functions = {"
+        "        Class = ReferenceContainer"
+        "        +GAM1 = {"
+        "            Class = CRIOUARTDataSourceTestGAM"
+        "            ExpectedPatterns = {"
+        "                {2   3  3  3  3  3  3  6  3  3  3  3  3  3  2}"
+        "            }"
+        "            InputSignals = {"
+        "               DataOK = {"
+        "                   DataSource = CRIOUART"
+        "                   Type = uint8"
+        "                   NumberOfElements = 1"
+        "               }"
+        "               Packet = {"
+        "                   DataSource = CRIOUART"
+        "                   Type = uint8"
+        "                   NumberOfElements = 15"
+        "               }"
+        "            }"
+        "        }"
+        "    }"
+        "    +Data = {"
+        "        Class = ReferenceContainer"
+        "        DefaultDataSource = DDB1"
+        "        +Timings = {"
+        "            Class = TimingDataSource"
+        "        }"
+        "        +CRIOUART = {"
+        "            Class = CRIOUARTDataSource"
+        "            NumberOfBuffers = 3"
+        "            PortName = \"/dev/ttyUSB0\""
+        "            BaudRate = 115200"
+        "            Timeout = 200000"
+        "            CPUMask = 8"
+        "            Signals = {"
+        "                DataOK = {"
+        "                    Type = uint8"
+        "                    NumberOfElements = 1"
+        "                }"
+        "                Packet = {"
+        "                    Type = uint8"
+        "                    NumberOfElements = 15"
+        "                }"
+        "            }"
+        "        }"
+        "    }"
+        "    +States = {"
+        "        Class = ReferenceContainer"
+        "        +State1 = {"
+        "            Class = RealTimeState"
+        "            +Threads = {"
+        "                Class = ReferenceContainer"
+        "                +Thread1 = {"
+        "                    Class = RealTimeThread"
+        "                    Functions = {GAM1}"
+        "                }"
+        "            }"
+        "        }"
+        "    }"
+        "    +Scheduler = {"
+        "        Class = GAMScheduler"
+        "        TimingDataSource = Timings"
+        "    }"
+        "}";
+
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
 /*---------------------------------------------------------------------------*/
@@ -305,8 +383,342 @@ bool CRIOUARTDataSourceTest::TestConstructor() {
     return (ds.GetNumberOfSignals() == 0);
 }
 
+bool CRIOUARTDataSourceTest::TestInitialise() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("PortName", "/dev/ttyUSB0");
+    cdb.Write("BaudRate", 9600);
+    cdb.Write("Timeout", 5000);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestInitialise_False_PortName() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("BaudRate", 9600);
+    cdb.Write("Timeout", 5000);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = !ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestInitialise_False_BaudRate() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("PortName", "/dev/ttyUSB0");
+    cdb.Write("Timeout", 5000);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = !ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestInitialise_False_Timeout() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("PortName", "/dev/ttyUSB0");
+    cdb.Write("BaudRate", 9600);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = !ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestInitialise_False_Port() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("PortName", "/dev/ttyUSC0");
+    cdb.Write("BaudRate", 9600);
+    cdb.Write("Timeout", 5000);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = !ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestInitialise_False_Baud() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    cdb.Write("PortName", "/dev/ttyUSB0");
+    cdb.Write("BaudRate", 9601);
+    cdb.Write("Timeout", 5000);
+    cdb.CreateAbsolute("Signals");
+    cdb.MoveToRoot();
+
+    bool ok = !ds.Initialise(cdb);
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestSetConfiguredDatabase() {
+    MARTe::TimeoutType timeout(2000);
+    return TestIntegratedInApplication(config2, timeout);
+}
+
+bool CRIOUARTDataSourceTest::TestGetInputOffset() {
+    return TestSetConfiguredDatabase();
+}
+
+bool CRIOUARTDataSourceTest::TestPrepareInputOffsets() {
+    return TestSetConfiguredDatabase();
+}
+
+bool CRIOUARTDataSourceTest::TestTerminateInputCopy() {
+    return TestSetConfiguredDatabase();
+}
+
 bool CRIOUARTDataSourceTest::TestCRIOThreadCallback() {
     MARTe::TimeoutType timeout(5000);
     return TestIntegratedInApplication(config1, timeout);
 }
 
+bool CRIOUARTDataSourceTest::TestCRIOThreadCallback_FailedRead() {
+    MARTe::TimeoutType timeout(5000);
+    return TestIntegratedInApplication(config1, timeout, 3);
+}
+
+bool CRIOUARTDataSourceTest::TestGetBrokerName() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    ConfigurationDatabase cdb;
+    StreamString brokerName = ds.GetBrokerName(cdb, InputSignals);
+    bool ok = (brokerName == "MemoryMapMultiBufferInputBroker");
+    return ok;
+}
+
+bool CRIOUARTDataSourceTest::TestSynchronise() {
+    using namespace MARTe;
+    CRIOUARTDataSource ds;
+    return ds.Synchronise();
+}
+
+bool CRIOUARTDataSourceTest::TestSetConfiguredDatabase_False_2_Signals() {
+    MARTe::TimeoutType timeout(2000);
+
+    //Standard configuration
+    const MARTe::char8 * const config = ""
+            "$Test = {"
+            "    Class = RealTimeApplication"
+            "    +Functions = {"
+            "        Class = ReferenceContainer"
+            "        +GAM1 = {"
+            "            Class = CRIOUARTDataSourceTestGAM"
+            "            ExpectedPatterns = {"
+            "                {2   3  3  3  3  3  3  6  3  3  3  3  3  3  2}"
+            "            }"
+            "            InputSignals = {"
+            "               Packet = {"
+            "                   DataSource = CRIOUART"
+            "                   Type = uint8"
+            "                   NumberOfElements = 15"
+            "               }"
+            "            }"
+            "        }"
+            "    }"
+            "    +Data = {"
+            "        Class = ReferenceContainer"
+            "        DefaultDataSource = DDB1"
+            "        +Timings = {"
+            "            Class = TimingDataSource"
+            "        }"
+            "        +CRIOUART = {"
+            "            Class = CRIOUARTDataSource"
+            "            NumberOfBuffers = 3"
+            "            PortName = \"/dev/ttyUSB0\""
+            "            BaudRate = 115200"
+            "            Timeout = 200000"
+            "            CPUMask = 8"
+            "            Signals = {"
+            "                Packet = {"
+            "                    Type = uint8"
+            "                    NumberOfElements = 15"
+            "                }"
+            "            }"
+            "        }"
+            "    }"
+            "    +States = {"
+            "        Class = ReferenceContainer"
+            "        +State1 = {"
+            "            Class = RealTimeState"
+            "            +Threads = {"
+            "                Class = ReferenceContainer"
+            "                +Thread1 = {"
+            "                    Class = RealTimeThread"
+            "                    Functions = {GAM1}"
+            "                }"
+            "            }"
+            "        }"
+            "    }"
+            "    +Scheduler = {"
+            "        Class = GAMScheduler"
+            "        TimingDataSource = Timings"
+            "    }"
+            "}";
+    return !TestIntegratedInApplication(config, timeout);
+}
+
+bool CRIOUARTDataSourceTest::TestSetConfiguredDatabase_False_Signal1_Not_UInt8() {
+    MARTe::TimeoutType timeout(2000);
+
+        //Standard configuration
+        const MARTe::char8 * const config = ""
+                "$Test = {"
+                "    Class = RealTimeApplication"
+                "    +Functions = {"
+                "        Class = ReferenceContainer"
+                "        +GAM1 = {"
+                "            Class = CRIOUARTDataSourceTestGAM"
+                "            ExpectedPatterns = {"
+                "                {2   3  3  3  3  3  3  6  3  3  3  3  3  3  2}"
+                "            }"
+                "            InputSignals = {"
+                "               DataOK = {"
+                "                   DataSource = CRIOUART"
+                "                   Type = uint16"
+                "                   NumberOfElements = 1"
+                "               }"
+                "               Packet = {"
+                "                   DataSource = CRIOUART"
+                "                   Type = uint8"
+                "                   NumberOfElements = 15"
+                "               }"
+                "            }"
+                "        }"
+                "    }"
+                "    +Data = {"
+                "        Class = ReferenceContainer"
+                "        DefaultDataSource = DDB1"
+                "        +Timings = {"
+                "            Class = TimingDataSource"
+                "        }"
+                "        +CRIOUART = {"
+                "            Class = CRIOUARTDataSource"
+                "            NumberOfBuffers = 3"
+                "            PortName = \"/dev/ttyUSB0\""
+                "            BaudRate = 115200"
+                "            Timeout = 200000"
+                "            CPUMask = 8"
+                "            Signals = {"
+                "                DataOK = {"
+                "                    Type = uint16"
+                "                    NumberOfElements = 1"
+                "                }"
+                "                Packet = {"
+                "                    Type = uint8"
+                "                    NumberOfElements = 15"
+                "                }"
+                "            }"
+                "        }"
+                "    }"
+                "    +States = {"
+                "        Class = ReferenceContainer"
+                "        +State1 = {"
+                "            Class = RealTimeState"
+                "            +Threads = {"
+                "                Class = ReferenceContainer"
+                "                +Thread1 = {"
+                "                    Class = RealTimeThread"
+                "                    Functions = {GAM1}"
+                "                }"
+                "            }"
+                "        }"
+                "    }"
+                "    +Scheduler = {"
+                "        Class = GAMScheduler"
+                "        TimingDataSource = Timings"
+                "    }"
+                "}";
+        return !TestIntegratedInApplication(config, timeout);
+}
+
+bool CRIOUARTDataSourceTest::TestSetConfiguredDatabase_False_Signal1_Not_1_Element() {
+    MARTe::TimeoutType timeout(2000);
+
+        //Standard configuration
+        const MARTe::char8 * const config = ""
+                "$Test = {"
+                "    Class = RealTimeApplication"
+                "    +Functions = {"
+                "        Class = ReferenceContainer"
+                "        +GAM1 = {"
+                "            Class = CRIOUARTDataSourceTestGAM"
+                "            ExpectedPatterns = {"
+                "                {2   3  3  3  3  3  3  6  3  3  3  3  3  3  2}"
+                "            }"
+                "            InputSignals = {"
+                "               DataOK = {"
+                "                   DataSource = CRIOUART"
+                "                   Type = uint8"
+                "                   NumberOfElements = 2"
+                "               }"
+                "               Packet = {"
+                "                   DataSource = CRIOUART"
+                "                   Type = uint8"
+                "                   NumberOfElements = 15"
+                "               }"
+                "            }"
+                "        }"
+                "    }"
+                "    +Data = {"
+                "        Class = ReferenceContainer"
+                "        DefaultDataSource = DDB1"
+                "        +Timings = {"
+                "            Class = TimingDataSource"
+                "        }"
+                "        +CRIOUART = {"
+                "            Class = CRIOUARTDataSource"
+                "            NumberOfBuffers = 3"
+                "            PortName = \"/dev/ttyUSB0\""
+                "            BaudRate = 115200"
+                "            Timeout = 200000"
+                "            CPUMask = 8"
+                "            Signals = {"
+                "                DataOK = {"
+                "                    Type = uint8"
+                "                    NumberOfElements = 2"
+                "                }"
+                "                Packet = {"
+                "                    Type = uint8"
+                "                    NumberOfElements = 15"
+                "                }"
+                "            }"
+                "        }"
+                "    }"
+                "    +States = {"
+                "        Class = ReferenceContainer"
+                "        +State1 = {"
+                "            Class = RealTimeState"
+                "            +Threads = {"
+                "                Class = ReferenceContainer"
+                "                +Thread1 = {"
+                "                    Class = RealTimeThread"
+                "                    Functions = {GAM1}"
+                "                }"
+                "            }"
+                "        }"
+                "    }"
+                "    +Scheduler = {"
+                "        Class = GAMScheduler"
+                "        TimingDataSource = Timings"
+                "    }"
+                "}";
+        return !TestIntegratedInApplication(config, timeout);
+}
+
+bool CRIOUARTDataSourceTest::TestPrepareNextState() {
+    return TestSetConfiguredDatabase();
+}

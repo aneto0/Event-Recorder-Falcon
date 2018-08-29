@@ -347,7 +347,7 @@ private:
      * @param[in] expectedElements the signal expected number of elements.
      * @return true if the signal respects the expected value.
      */
-    bool CheckSignal(MARTe::uint32 signalIdx, MARTe::SignalDirection direction, MARTe::TypeDescriptor expectedType, MARTe::uint32 expectedDimensions, MARTe::uint32 expectedElements);
+    bool CheckSignal(MARTe::uint32 signalIdx, MARTe::SignalDirection direction, const MARTe::TypeDescriptor &expectedType, MARTe::uint32 expectedDimensions, MARTe::uint32 expectedElements);
 
     /**
      * Compute the packet CRC so that it can be compared against the CRC that is delivered in the input of the GAM.
@@ -362,7 +362,7 @@ private:
     /**
      * The synchronism byte of the last packet 0xAA or 0x55
      */
-    MARTe::int8 lastSynchronismByte;
+    MARTe::uint8 lastSynchronismByte;
 
     /**
      * The time of the last packet.

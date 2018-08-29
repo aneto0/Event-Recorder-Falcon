@@ -55,10 +55,10 @@ public:
 
     /**
      * @brief Sets the speed of the UART. Shall be called before the Open method.
-     * @param[in,out] serial the speed to set and the speed that was actually set.
+     * @param[in] serial the speed to set.
      * @return true if the speed was successfully updated.
      */
-    bool SetSpeed(MARTe::uint32 &speed);
+    bool SetSpeed(MARTe::uint32 speed);
 
     /**
      * @brief Opens the UART described by the provided \a name.

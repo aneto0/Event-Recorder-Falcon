@@ -51,6 +51,16 @@ public:
     bool TestSetSpeed();
 
     /**
+     * @brief Tests that the SetSpeed method fails if a wrong speed is set.
+     */
+    bool TestSetSpeed_False();
+
+    /**
+     * @brief Tests that the SetSpeed method fails if called after the serial was opened.
+     */
+    bool TestSetSpeed_False_Open();
+
+    /**
      * @brief Tests the Open method.
      */
     bool TestOpen();

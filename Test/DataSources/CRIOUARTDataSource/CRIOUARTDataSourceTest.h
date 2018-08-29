@@ -32,7 +32,6 @@
 /*                        Project header includes                            */
 /*---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------*/
 /*                           Class declaration                               */
 /*---------------------------------------------------------------------------*/
@@ -47,12 +46,95 @@ public:
     bool TestConstructor();
 
     /**
-     * @brief Tests the CRIOThreadCallback (i.e. that the serial port is receiving the expected data).
+     * @brief Tests the Initialise method.
+     */
+    bool TestInitialise();
+
+    /**
+     * @brief Tests that the Initialise method fails if no PortName is specified.
+     */
+    bool TestInitialise_False_PortName();
+
+    /**
+     * @brief Tests that the Initialise method fails if no BaudRate is specified.
+     */
+    bool TestInitialise_False_BaudRate();
+
+    /**
+     * @brief Tests that the Initialise method fails if no Timeout is specified.
+     */
+    bool TestInitialise_False_Timeout();
+
+    /**
+     * @brief Tests that the Initialise method fails if the port cannot be open.
+     */
+    bool TestInitialise_False_Port();
+
+    /**
+     * @brief Tests that the Initialise method fails if the baud cannot be set.
+     */
+    bool TestInitialise_False_Baud();
+
+    /**
+     * @brief Tests the SetConfiguredDatabase method.
+     */
+    bool TestSetConfiguredDatabase();
+
+    /**
+     * @brief Tests that the SetConfiguredDatabase method fails if the number of specified signals is not 2.
+     */
+    bool TestSetConfiguredDatabase_False_2_Signals();
+
+    /**
+     * @brief Tests that the SetConfiguredDatabase method fails if the first signal is not uint8.
+     */
+    bool TestSetConfiguredDatabase_False_Signal1_Not_UInt8();
+
+    /**
+     * @brief Tests that the SetConfiguredDatabase method fails if the first signal has not 1 element.
+     */
+    bool TestSetConfiguredDatabase_False_Signal1_Not_1_Element();
+
+    /**
+     * @brief Tests the GetInputOffset method.
+     */
+    bool TestGetInputOffset();
+
+    /**
+     * @brief Tests the PrepareInputOffsets method.
+     */
+    bool TestPrepareInputOffsets();
+
+    /**
+     * @brief Tests the TerminateInputCopy method.
+     */
+    bool TestTerminateInputCopy();
+
+    /**
+     * @brief Tests the CRIOThreadCallback method.
      */
     bool TestCRIOThreadCallback();
+
+    /**
+     * @brief Tests that the CRIOThreadCallback handles a bad UART read.
+     */
+    bool TestCRIOThreadCallback_FailedRead();
+
+    /**
+     * @brief Tests the GetBrokerName method.
+     */
+    bool TestGetBrokerName();
+
+    /**
+     * @brief Tests the Synchronise method.
+     */
+    bool TestSynchronise();
+
+    /**
+     * @brief Tests the PrepareNextState method.
+     */
+    bool TestPrepareNextState();
 };
-
-
 
 /*---------------------------------------------------------------------------*/
 /*                        Inline method definitions                          */

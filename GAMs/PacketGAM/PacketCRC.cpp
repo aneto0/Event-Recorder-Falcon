@@ -51,7 +51,7 @@ PacketCRC::~PacketCRC() {
     }
 }
 
-void PacketCRC::ComputeTable(MARTe::uint16 generator) {
+void PacketCRC::ComputeTable(const MARTe::uint16 pol) {
     using namespace MARTe;
     if (crcTable != NULL_PTR(MARTe::uint16 *)) {
         delete[] crcTable;
@@ -59,40 +59,40 @@ void PacketCRC::ComputeTable(MARTe::uint16 generator) {
     }
     crcTable = new uint16[256u];
 
-    uint32 div;
-    for (div = 0; div < 256u; div++) {
-        uint16 curByte = static_cast<uint16>(div << 8u); /* move divident byte into MSB of 16Bit CRC */
+    uint32 d; //divisor
+    for (d = 0u; d < 256u; d++) {
+        uint16 curByte = static_cast<uint16>(d << 8u); /* move divident byte into MSB of 16Bit CRC */
 
         uint8 bit;
         for (bit = 0u; bit < 8u; bit++) {
-            if ((curByte & 0x8000u) != 0) {
+            if ((curByte & 0x8000u) != 0u) {
                 curByte <<= 1;
-                curByte ^= generator;
+                curByte ^= pol;
             }
             else {
                 curByte <<= 1;
             }
         }
 
-        crcTable[div] = curByte;
+        crcTable[d] = curByte;
     }
 }
 
-void PacketCRC::SetInitialCRC(MARTe::uint16 initCRCIn) {
+void PacketCRC::SetInitialCRC(const MARTe::uint16 initCRCIn) {
     initCRC = initCRCIn;
 }
 
-MARTe::uint16 PacketCRC::ComputeCRC(MARTe::uint8 *data, MARTe::int32 size, bool inputInverted) {
+MARTe::uint16 PacketCRC::ComputeCRC(const MARTe::uint8 * const data, const MARTe::int32 size, const bool inputInverted) const {
     using namespace MARTe;
     int32 b;
-    uint32 crc = initCRC;
+    uint16 crc = initCRC;
 
-    for (b = 0u; b < size; b++) {
+    for (b = 0; b < size; b++) {
         uint8 pos = static_cast<uint8>((crc >> 8) ^ data[inputInverted ? -b : b]);
-        crc = static_cast<uint16>((crc << 8) ^ static_cast<uint16>(crcTable[pos]));
+        /*lint -e{613} crcTable is not NULL if pre-condition is met*/
+        crc = static_cast<uint16>(static_cast<uint16>(crc << 8) ^ crcTable[pos]);
     }
 
     return crc;
-
 }
 

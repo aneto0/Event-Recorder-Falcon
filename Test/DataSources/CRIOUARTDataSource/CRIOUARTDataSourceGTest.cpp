@@ -48,3 +48,88 @@ TEST(CRIOUARTDataSourceGTest,TestCRIOThreadCallback) {
     CRIOUARTDataSourceTest test;
     ASSERT_TRUE(test.TestCRIOThreadCallback());
 }
+
+TEST(CRIOUARTDataSourceGTest,TestCRIOThreadCallback_FailedRead) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestCRIOThreadCallback_FailedRead());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestGetBrokerName) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestGetBrokerName());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestGetInputOffset) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestGetInputOffset());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise_False_Baud) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise_False_Baud());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise_False_BaudRate) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise_False_BaudRate());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise_False_Port) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise_False_Port());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise_False_PortName) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise_False_PortName());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestInitialise_False_Timeout) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestInitialise_False_Timeout());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestPrepareInputOffsets) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestPrepareInputOffsets());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestPrepareNextState) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestPrepareNextState());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestSetConfiguredDatabase) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestSetConfiguredDatabase());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestSetConfiguredDatabase_False_Signal1_Not_UInt8) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestSetConfiguredDatabase_False_Signal1_Not_UInt8());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestSetConfiguredDatabase_False_Signal1_Not_1_Element) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestSetConfiguredDatabase_False_Signal1_Not_1_Element());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestSetConfiguredDatabase_False_2_Signals) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestSetConfiguredDatabase_False_2_Signals());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestSynchronise) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestSynchronise());
+}
+
+TEST(CRIOUARTDataSourceGTest,TestTerminateInputCopy) {
+    CRIOUARTDataSourceTest test;
+    ASSERT_TRUE(test.TestTerminateInputCopy());
+}

@@ -74,6 +74,16 @@ TEST(CRIOUARTSerialGTest,TestSetSpeed) {
     ASSERT_TRUE(test.TestSetSpeed());
 }
 
+TEST(CRIOUARTSerialGTest,TestSetSpeed_False) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestSetSpeed_False());
+}
+
+TEST(CRIOUARTSerialGTest,TestSetSpeed_False_Open) {
+    CRIOUARTSerialTest test;
+    ASSERT_TRUE(test.TestSetSpeed_False_Open());
+}
+
 TEST(CRIOUARTSerialGTest,TestWaitRead) {
     CRIOUARTSerialTest test;
     ASSERT_TRUE(test.TestWaitRead());

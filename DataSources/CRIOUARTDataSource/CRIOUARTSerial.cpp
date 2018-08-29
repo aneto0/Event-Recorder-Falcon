@@ -46,10 +46,10 @@ struct SpeedTable {
 };
 
 const SpeedTable speedTable[] = { { B0, 0u }, { B50, 50u }, { B75, 75u }, { B110, 110u }, { B134, 134u }, { B150, 150u }, { B200, 200u }, { B300, 300u },
-                                { B600, 600u }, { B1200, 1200 },{ B1800, 1800 }, { B2400, 2400u }, { B4800, 4800u }, { B9600, 9600u }, { B19200, 19200u },
+                                { B600, 600u }, { B1200, 1200u },{ B1800, 1800u }, { B2400, 2400u }, { B4800, 4800u }, { B9600, 9600u }, { B19200, 19200u },
                                 { B38400, 38400u }, { B57600, 57600u }, { B115200, 115200u }, { B230400, 230400u }, { B460800, 460800u }, { B500000, 500000u },
                                 { B576000, 576000u }, { B921600, 921600u }, { B1000000, 1000000u }, { B1152000, 1152000u }, { B1500000, 1500000u },
-                                { B2000000, 2000000u }, { B2500000, 2500000u }, { B3000000, 3000000 }, {B3500000, 3500000 }, { B4000000, 4000000u } };
+                                { B2000000, 2000000u }, { B2500000, 2500000u }, { B3000000, 3000000u }, {B3500000, 3500000u }, { B4000000, 4000000u } };
 
 /*---------------------------------------------------------------------------*/
 /*                           Method definitions                              */
@@ -67,7 +67,7 @@ CRIOUARTSerial::~CRIOUARTSerial() {
     Close();
 }
 
-bool CRIOUARTSerial::SetSpeed(MARTe::uint32& speed) {
+bool CRIOUARTSerial::SetSpeed(MARTe::uint32 speed) {
     using namespace MARTe;
     bool ok = (fileDescriptor == -1);
     if (ok) {
@@ -76,8 +76,7 @@ bool CRIOUARTSerial::SetSpeed(MARTe::uint32& speed) {
             ix++;
         }
         speedCode = speedTable[ix].code;
-        speed = speedTable[ix].speed;
-
+        ok = (speed == speedTable[ix].speed);
     }
     return ok;
 }

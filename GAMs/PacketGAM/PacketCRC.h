@@ -55,7 +55,7 @@ public:
     /**
      * @brief Destroys the previously allocated polynomial division lookup table.
      */
-    virtual ~PacketCRC();
+    ~PacketCRC();
 
     /**
      * @brief Computes a lookup table for a given polynomial divisor.
@@ -76,7 +76,7 @@ public:
      * This implies that, when using inputInverted, the data must be pointing at the last byte (since negative indexes will be used)
      * @return the CRC value.
      */
-    MARTe::uint16 ComputeCRC(MARTe::uint8 *data, MARTe::int32 size, bool inputInverted);
+    MARTe::uint16 ComputeCRC(const MARTe::uint8 * const data, MARTe::int32 size, bool inputInverted) const;
 
 private:
     /**

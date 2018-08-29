@@ -1,8 +1,7 @@
 -i./DataSources/CRIOUARTDataSource/
 -i./GAMs/PacketGAM/
 
-CRIOUARTDataSource.h
+CRIOUARTDataSource.cpp
 CRIOUARTSerial.cpp
 PacketCRC.cpp
 PacketGAM.cpp
-

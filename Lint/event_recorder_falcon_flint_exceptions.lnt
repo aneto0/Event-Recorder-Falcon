@@ -1,0 +1,16 @@
+/*Use of the using namespace directive inside a function*/
+-e9144
+
+/*No namespace defined for project*/
+-e9141
+
+ /* static member not referenced */
+-esym(1715,PacketGAM::*)
+
+/* member function not referenced */
+-esym(1714,PacketGAM::*)
+
+/* false positives related to the CLASS_REGISTER macros */
+-esym(843,PacketGAM_*)
+-esym(844,PacketGAM_*)
+-esym(1914,PacketGAM::*)
