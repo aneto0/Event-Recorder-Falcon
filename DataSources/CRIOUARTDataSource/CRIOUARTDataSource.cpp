@@ -138,6 +138,15 @@ bool CRIOUARTDataSource::Initialise(MARTe::StructuredDataI &data) {
         ok = executor.Initialise(data);
     }
     if (ok) {
+        uint32 cpuMask;
+        if (!data.Read("CPUMask", cpuMask)) {
+            cpuMask = 0xFFu;
+            REPORT_ERROR(ErrorManagement::Warning, "CPUMask not specified using: %d", cpuMask);
+        }
+        executor.SetCPUMask(cpuMask);
+    }
+
+    if (ok) {
         muxSem.Create();
     }
     return ok;
